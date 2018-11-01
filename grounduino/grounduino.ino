@@ -1,3 +1,5 @@
+//LIFTED FROM COMPONENT EXAMPLES -- needs experimentation and more work generally obv
+
 #include <SPI.h>
 #include <RH_RF95.h>
 
@@ -6,24 +8,20 @@
 #define RFM95_INT 3
 #define RF95_FREQ 915.0
 
-RH_RF95 rf95(RFM95_CS, RFM95_INT);
+uint8_t buffer[1000] = {0};
 
-char packetspam[100];
+RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 void setup() {
   Serial.begin(9600);
-  //while (!Serial);
-  Serial.println("Starting setup");
   pinMode(RFM95_RST, OUTPUT);
-
-digitalWrite(RFM95_RST, HIGH);
+  digitalWrite(RFM95_RST, HIGH);
   delay(10);
   digitalWrite(RFM95_RST, LOW);
   delay(10);
   digitalWrite(RFM95_RST, HIGH);
   delay(10);
-  
-  pinMode(13, OUTPUT);
+ 
   while (!rf95.init()) {
     Serial.println("LoRa radio init failed");
     while (1);
@@ -35,21 +33,20 @@ digitalWrite(RFM95_RST, HIGH);
   }
  
   rf95.setTxPower(23, false);
-
-  for (int i = 0; i < 100; i++) {
-    packetspam[i] = 'A';
-  }
-  Serial.println("finished setup");
 }
+
+int numbytes = 0;
 
 void loop() {
-  //Transmit quickly...
-  //delay(100);
-  Serial.println("Transmitting");
-  digitalWrite(13, HIGH);
-  rf95.send((uint8_t*) packetspam, 100);
-  digitalWrite(13, LOW);
-  rf95.waitPacketSent();
+  while (!rf95.available());
   
+    uint8_t buf[100];
+    uint8_t len = sizeof(buf);
+    
+    rf95.recv(buf, &len);
+    for (int i = 0; i < 100; i++) {
+      if (buffer[i] != 0)
+        numbytes++;
+    }
+    Serial.println(buffer[0]);
 }
-
