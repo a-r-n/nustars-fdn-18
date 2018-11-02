@@ -8,7 +8,7 @@
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-char packetspam[100];
+uint8_t packetspam[250];
 
 void setup() {
   Serial.begin(9600);
@@ -36,7 +36,7 @@ digitalWrite(RFM95_RST, HIGH);
  
   rf95.setTxPower(23, false);
 
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 250; i++) {
     packetspam[i] = 'A';
   }
   Serial.println("finished setup");
@@ -44,11 +44,12 @@ digitalWrite(RFM95_RST, HIGH);
 
 void loop() {
   //Transmit quickly...
-  //delay(100);
+  
   Serial.println("Transmitting");
   digitalWrite(13, HIGH);
-  rf95.send((uint8_t*) packetspam, 100);
+  rf95.send(packetspam, 250);
   digitalWrite(13, LOW);
+  //delay(1000);
   rf95.waitPacketSent();
   
 }
