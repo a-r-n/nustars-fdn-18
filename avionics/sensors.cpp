@@ -10,12 +10,11 @@ namespace nustars {
      * Initialize the BNO
      */
     Accelerometer::Accelerometer() {
-        bno = Adafruit_BNO055(55); //I2C address, probably.
+        bno = Adafruit_BNO055(55); //I2C address, can't get working
         orientation = new int[3];
         if (!bno.begin()) {
-            Serial.print(
-                    "Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!"); //TODO: Learn to throw an exception
-            while (1);
+            Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!"); //TODO: Learn to throw an exception
+            //while (1);
         }
         bno.setExtCrystalUse(true);
     }

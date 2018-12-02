@@ -36,12 +36,10 @@ void setup() {
 int numbytes = 0;
 
 void loop() {
-  Serial.println("If there is ever an apocalypse...");
   while (!rf95.available());
+  uint8_t buf[250];
+  uint8_t len = sizeof(buf);
   
-    uint8_t buf[250];
-    uint8_t len = sizeof(buf);
-    
-    rf95.recv(buf, &len);
-    Serial.println((char*) buf);
+  rf95.recv(buf, &len);
+  Serial.println((char*) buf);
 }
