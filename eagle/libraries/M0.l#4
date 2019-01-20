@@ -74,34 +74,34 @@
 <library>
 <packages>
 <package name="M0">
-<pad name="EN" x="3.81" y="10.16" drill="0.8"/>
-<pad name="USB" x="6.35" y="10.16" drill="0.8"/>
-<pad name="13" x="8.89" y="10.16" drill="0.8"/>
-<pad name="12" x="11.43" y="10.16" drill="0.8"/>
-<pad name="11" x="13.97" y="10.16" drill="0.8"/>
-<pad name="10" x="16.51" y="10.16" drill="0.8"/>
-<pad name="9" x="19.05" y="10.16" drill="0.8"/>
-<pad name="6" x="21.59" y="10.16" drill="0.8"/>
-<pad name="5" x="24.13" y="10.16" drill="0.8"/>
-<pad name="SCL" x="26.67" y="10.16" drill="0.8"/>
-<pad name="SDA" x="29.21" y="10.16" drill="0.8"/>
-<pad name="BAT" x="1.27" y="10.16" drill="0.8"/>
-<pad name="GND_0" x="29.21" y="-10.16" drill="0.8"/>
-<pad name="TX" x="26.67" y="-10.16" drill="0.8"/>
-<pad name="RX" x="24.13" y="-10.16" drill="0.8"/>
-<pad name="MO" x="21.59" y="-10.16" drill="0.8"/>
-<pad name="MI" x="19.05" y="-10.16" drill="0.8"/>
-<pad name="SCK" x="16.51" y="-10.16" drill="0.8"/>
-<pad name="A5" x="13.97" y="-10.16" drill="0.8"/>
-<pad name="A4" x="11.43" y="-10.16" drill="0.8"/>
-<pad name="A3" x="8.89" y="-10.16" drill="0.8"/>
-<pad name="A2" x="6.35" y="-10.16" drill="0.8"/>
-<pad name="A1" x="3.81" y="-10.16" drill="0.8"/>
-<pad name="A0" x="1.27" y="-10.16" drill="0.8"/>
-<pad name="GND" x="-1.27" y="-10.16" drill="0.8"/>
-<pad name="ARF" x="-3.81" y="-10.16" drill="0.8"/>
-<pad name="3V" x="-6.35" y="-10.16" drill="0.8"/>
-<pad name="RST" x="-8.89" y="-10.16" drill="0.8"/>
+<pad name="EN" x="3.81" y="10.16" drill="0.9"/>
+<pad name="USB" x="6.35" y="10.16" drill="0.9"/>
+<pad name="13" x="8.89" y="10.16" drill="0.9"/>
+<pad name="12" x="11.43" y="10.16" drill="0.9"/>
+<pad name="11" x="13.97" y="10.16" drill="0.9"/>
+<pad name="10" x="16.51" y="10.16" drill="0.9"/>
+<pad name="9" x="19.05" y="10.16" drill="0.9"/>
+<pad name="6" x="21.59" y="10.16" drill="0.9"/>
+<pad name="5" x="24.13" y="10.16" drill="0.9"/>
+<pad name="SCL" x="26.67" y="10.16" drill="0.9"/>
+<pad name="SDA" x="29.21" y="10.16" drill="0.9"/>
+<pad name="BAT" x="1.27" y="10.16" drill="0.9"/>
+<pad name="GND_0" x="29.21" y="-10.16" drill="0.9"/>
+<pad name="TX" x="26.67" y="-10.16" drill="0.9"/>
+<pad name="RX" x="24.13" y="-10.16" drill="0.9"/>
+<pad name="MO" x="21.59" y="-10.16" drill="0.9"/>
+<pad name="MI" x="19.05" y="-10.16" drill="0.9"/>
+<pad name="SCK" x="16.51" y="-10.16" drill="0.9"/>
+<pad name="A5" x="13.97" y="-10.16" drill="0.9"/>
+<pad name="A4" x="11.43" y="-10.16" drill="0.9"/>
+<pad name="A3" x="8.89" y="-10.16" drill="0.9"/>
+<pad name="A2" x="6.35" y="-10.16" drill="0.9"/>
+<pad name="A1" x="3.81" y="-10.16" drill="0.9"/>
+<pad name="A0" x="1.27" y="-10.16" drill="0.9"/>
+<pad name="GND" x="-1.27" y="-10.16" drill="0.9"/>
+<pad name="ARF" x="-3.81" y="-10.16" drill="0.9"/>
+<pad name="3V" x="-6.35" y="-10.16" drill="0.9"/>
+<pad name="RST" x="-8.89" y="-10.16" drill="0.9"/>
 <wire x1="-12.7" y1="11.43" x2="33.02" y2="11.43" width="0.127" layer="21"/>
 <wire x1="33.02" y1="11.43" x2="35.56" y2="8.89" width="0.127" layer="21" curve="-90"/>
 <wire x1="35.56" y1="8.89" x2="35.56" y2="-8.89" width="0.127" layer="21"/>
@@ -115,8 +115,6 @@
 <pad name="A6" x="-12.7" y="8.89" drill="2.54"/>
 <pad name="A7" x="-12.7" y="-8.89" drill="2.54"/>
 <text x="-7.62" y="-1.27" size="1.778" layer="21">Feather M0</text>
-<dimension x1="-15.24" y1="8.89" x2="35.56" y2="8.89" x3="10.16" y3="13.97" textsize="1.27" layer="20" unit="inch"/>
-<dimension x1="-12.7" y1="11.43" x2="-12.7" y2="-11.43" x3="-19.05" y3="0" textsize="1.27" layer="20" unit="inch"/>
 </package>
 <package name="BMP">
 <wire x1="2.54" y1="0" x2="15.24" y2="0" width="0.127" layer="21"/>
@@ -137,13 +135,8 @@
 <pad name="A8" x="2.54" y="16.51" drill="2.032"/>
 <pad name="A9" x="15.24" y="16.51" drill="2.032"/>
 <text x="8.89" y="17.78" size="1.27" layer="21" align="center">BMP280</text>
-<dimension x1="0" y1="16.51" x2="17.78" y2="16.51" x3="8.89" y3="21.59" textsize="1.27" layer="20" unit="inch"/>
-<dimension x1="2.54" y1="19.05" x2="2.54" y2="0" x3="-2.54" y3="9.525" textsize="1.27" layer="20" unit="inch"/>
 </package>
 <package name="ADXL377">
-<dimension x1="0" y1="0" x2="19.05" y2="0" x3="9.525" y3="-3.048" textsize="1.27" layer="20" unit="inch"/>
-<dimension x1="0" y1="0" x2="0" y2="19.05" x3="-2.794" y3="9.525" textsize="1.27" layer="20" unit="inch"/>
-<wire x1="0" y1="0" x2="2.54" y2="0" width="0.127" layer="20"/>
 <wire x1="2.54" y1="0" x2="0" y2="2.54" width="0.127" layer="21" curve="-90"/>
 <wire x1="0" y1="2.54" x2="0" y2="16.51" width="0.127" layer="21"/>
 <wire x1="0" y1="16.51" x2="2.54" y2="19.05" width="0.127" layer="21" curve="-90"/>
@@ -152,10 +145,6 @@
 <wire x1="19.05" y1="16.51" x2="19.05" y2="2.54" width="0.127" layer="21"/>
 <wire x1="19.05" y1="2.54" x2="16.51" y2="0" width="0.127" layer="21" curve="-90"/>
 <wire x1="16.51" y1="0" x2="2.54" y2="0" width="0.127" layer="21"/>
-<pad name="P$1" x="2.54" y="16.51" drill="2.54" diameter="3.81"/>
-<pad name="P$2" x="16.51" y="16.51" drill="2.54" diameter="3.81"/>
-<pad name="P$3" x="2.54" y="6.35" drill="2.54" diameter="3.81"/>
-<pad name="P$4" x="16.51" y="6.35" drill="2.54" diameter="3.81"/>
 <pad name="VIN" x="1.905" y="2.032" drill="0.9"/>
 <pad name="3V" x="4.445" y="2.032" drill="0.9"/>
 <pad name="GND" x="6.985" y="2.032" drill="0.9"/>
@@ -164,6 +153,12 @@
 <pad name="Y" x="14.605" y="2.032" drill="0.9"/>
 <pad name="X" x="17.145" y="2.032" drill="0.9"/>
 <text x="5.715" y="16.891" size="1.27" layer="21">ADXL377</text>
+<dimension x1="0" y1="2.54" x2="19.05" y2="2.54" x3="9.525" y3="-2.54" textsize="1.27" layer="51" unit="inch"/>
+<dimension x1="2.54" y1="0" x2="2.54" y2="19.05" x3="-3.81" y3="9.525" textsize="1.27" layer="51" unit="inch"/>
+<hole x="16.51" y="6.35" drill="2.6924"/>
+<hole x="2.54" y="16.51" drill="2.6924"/>
+<hole x="16.51" y="16.51" drill="2.6924"/>
+<hole x="2.54" y="6.35" drill="2.6924"/>
 </package>
 </packages>
 <symbols>

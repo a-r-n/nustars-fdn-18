@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2019-01-16T23:30:26Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.2.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "Mainboard"
+        },
+        "Owner": "Aaron Nelson <aaronnelson@u.northwestern.edu>",
+        "Size": {
+            "X": 105,
+            "Y": 48
+        }
+    }
+}
