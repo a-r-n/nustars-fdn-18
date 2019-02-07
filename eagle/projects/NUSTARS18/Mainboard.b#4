@@ -3,7 +3,7 @@
 <eagle version="9.2.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
@@ -2067,10 +2067,14 @@ design rules under a new name.</description>
 <signal name="TX">
 <contactref element="U$1" pad="TX"/>
 <contactref element="U$4" pad="TX"/>
-<wire x1="79.674" y1="20.97" x2="80.60345625" y2="20.040546875" width="0.1524" layer="1"/>
-<wire x1="80.60345625" y1="20.040546875" x2="74.430715625" y2="13.86780625" width="0.1524" layer="1"/>
-<wire x1="74.430715625" y1="13.86780625" x2="45.31780625" y2="13.86780625" width="0.1524" layer="1"/>
-<wire x1="45.31780625" y1="13.86780625" x2="42.99" y2="11.54" width="0.1524" layer="1"/>
+<wire x1="47.31780625" y1="15.86780625" x2="76.430715625" y2="15.86780625" width="0.1524" layer="1"/>
+<wire x1="47.31780625" y1="15.86780625" x2="42.99" y2="11.54" width="0.1524" layer="1"/>
+<wire x1="76.430715625" y1="15.86780625" x2="77.580709375" y2="17.0178" width="0.1524" layer="1"/>
+<wire x1="80.6066" y1="18.0437" x2="80.6066" y2="18.8163" width="0.1524" layer="1"/>
+<wire x1="79.674" y1="19.7489" x2="79.674" y2="20.97" width="0.1524" layer="1"/>
+<wire x1="80.6066" y1="18.8163" x2="79.674" y2="19.7489" width="0.1524" layer="1"/>
+<wire x1="77.580709375" y1="17.0178" x2="79.5807" y2="17.0178" width="0.1524" layer="1"/>
+<wire x1="79.5807" y1="17.0178" x2="80.6066" y2="18.0437" width="0.1524" layer="1"/>
 </signal>
 <signal name="RX">
 <contactref element="U$1" pad="RX"/>

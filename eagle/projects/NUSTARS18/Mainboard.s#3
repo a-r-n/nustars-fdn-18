@@ -9791,9 +9791,6 @@ DIN A3, landscape with location and doc. field</description>
 <errors>
 <approved hash="202,1,106.68,38.1,U$4,EN,,,,"/>
 <approved hash="202,1,111.76,38.1,U$4,VBAT,,,,"/>
-<approved hash="113,1,217.763,179.202,SERVO,,,,,"/>
-<approved hash="113,1,-71.7973,180.472,BAT_1,,,,,"/>
-<approved hash="113,1,-71.7973,167.772,BAT_0,,,,,"/>
 <approved hash="113,1,94.511,76.731,FRAME1,,,,,"/>
 </errors>
 </schematic>

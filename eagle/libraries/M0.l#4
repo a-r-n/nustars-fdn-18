@@ -132,9 +132,9 @@
 <pad name="SDO" x="11.43" y="2.54" drill="0.9"/>
 <pad name="SDI" x="13.97" y="2.54" drill="0.9"/>
 <pad name="CS" x="16.51" y="2.54" drill="0.9"/>
+<pad name="A8" x="2.54" y="16.51" drill="2.032"/>
+<pad name="A9" x="15.24" y="16.51" drill="2.032"/>
 <text x="8.89" y="17.78" size="1.27" layer="21" align="center">BMP280</text>
-<hole x="2.54" y="16.51" drill="2.6924"/>
-<hole x="15.24" y="16.51" drill="2.6924"/>
 </package>
 <package name="ADXL377">
 <wire x1="2.54" y1="0" x2="0" y2="2.54" width="0.127" layer="21" curve="-90"/>

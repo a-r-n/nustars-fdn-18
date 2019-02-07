@@ -9406,6 +9406,65 @@ DIN A3, landscape with location and doc. field</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="wirepad" urn="urn:adsk.eagle:library:412">
+<description>&lt;b&gt;Single Pads&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+<package name="3,81/1,4" urn="urn:adsk.eagle:footprint:30817/1" library_version="1">
+<description>&lt;b&gt;THROUGH-HOLE PAD&lt;/b&gt;</description>
+<wire x1="1.905" y1="-1.27" x2="1.905" y2="-1.905" width="0.1524" layer="21"/>
+<wire x1="1.905" y1="-1.905" x2="1.27" y2="-1.905" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="-1.905" x2="-1.905" y2="-1.905" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="-1.905" x2="-1.905" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="1.27" x2="-1.905" y2="1.905" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="1.905" x2="-1.27" y2="1.905" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="1.905" x2="1.905" y2="1.905" width="0.1524" layer="21"/>
+<wire x1="1.905" y1="1.905" x2="1.905" y2="1.27" width="0.1524" layer="21"/>
+<circle x="0" y="0" radius="1.27" width="0.1524" layer="51"/>
+<pad name="1" x="0" y="0" drill="1.397" diameter="3.81" shape="octagon"/>
+<text x="-1.905" y="2.286" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="0" y="1.2" size="0.0254" layer="27">&gt;VALUE</text>
+</package>
+</packages>
+<packages3d>
+<package3d name="3,81/1,4" urn="urn:adsk.eagle:package:30835/1" type="box" library_version="1">
+<description>THROUGH-HOLE PAD</description>
+<packageinstances>
+<packageinstance name="3,81/1,4"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="PAD" urn="urn:adsk.eagle:symbol:30808/1" library_version="1">
+<wire x1="-1.016" y1="1.016" x2="1.016" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="-1.016" y1="-1.016" x2="1.016" y2="1.016" width="0.254" layer="94"/>
+<text x="-1.143" y="1.8542" size="1.778" layer="95">&gt;NAME</text>
+<text x="-1.143" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="P" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="3,81/1,4" urn="urn:adsk.eagle:component:30853/1" prefix="PAD" uservalue="yes" library_version="1">
+<description>&lt;b&gt;THROUGH-HOLE PAD&lt;/b&gt;</description>
+<gates>
+<gate name="1" symbol="PAD" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="3,81/1,4">
+<connects>
+<connect gate="1" pin="P" pad="1"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:30835/1"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -9440,6 +9499,8 @@ DIN A3, landscape with location and doc. field</description>
 <part name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/1" value="10k"/>
 <part name="R5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/1" value="10k"/>
 <part name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/1" value="10k"/>
+<part name="BAT_7.4V" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="3,81/1,4" device="" package3d_urn="urn:adsk.eagle:package:30835/1"/>
+<part name="BAT_GND" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="3,81/1,4" device="" package3d_urn="urn:adsk.eagle:package:30835/1"/>
 </parts>
 <sheets>
 <sheet>
@@ -9531,6 +9592,14 @@ DIN A3, landscape with location and doc. field</description>
 <instance part="R6" gate="G$1" x="-12.7" y="114.3" smashed="yes" rot="R90">
 <attribute name="NAME" x="-14.1986" y="110.49" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="-9.398" y="110.49" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="BAT_7.4V" gate="1" x="-38.1" y="165.1" smashed="yes" rot="R180">
+<attribute name="NAME" x="-36.957" y="163.2458" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="-36.957" y="168.402" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="BAT_GND" gate="1" x="-38.1" y="180.34" smashed="yes" rot="R180">
+<attribute name="NAME" x="-36.957" y="178.4858" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="-36.957" y="183.642" size="1.778" layer="96" rot="R180"/>
 </instance>
 </instances>
 <busses>
@@ -9694,9 +9763,10 @@ DIN A3, landscape with location and doc. field</description>
 <label x="132.08" y="30.48" size="1.778" layer="95" rot="R270"/>
 </segment>
 <segment>
-<wire x1="-68.58" y1="180.34" x2="-63.5" y2="180.34" width="0.1524" layer="91"/>
 <label x="-63.5" y="180.34" size="1.778" layer="95"/>
 <pinref part="BAT_1" gate="G$1" pin="2"/>
+<pinref part="BAT_GND" gate="1" pin="P"/>
+<wire x1="-68.58" y1="180.34" x2="-40.64" y2="180.34" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC0" gate="A1" pin="GND"/>
@@ -9770,9 +9840,10 @@ DIN A3, landscape with location and doc. field</description>
 </net>
 <net name="V_BAT" class="0">
 <segment>
-<wire x1="-68.58" y1="165.1" x2="-63.5" y2="165.1" width="0.1524" layer="91"/>
 <label x="-63.5" y="165.1" size="1.778" layer="95"/>
 <pinref part="BAT_0" gate="G$1" pin="1"/>
+<pinref part="BAT_7.4V" gate="1" pin="P"/>
+<wire x1="-40.64" y1="165.1" x2="-68.58" y2="165.1" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC0" gate="A1" pin="VI"/>

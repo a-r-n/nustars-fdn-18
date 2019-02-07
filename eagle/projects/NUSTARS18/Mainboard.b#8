@@ -1843,11 +1843,11 @@ design rules under a new name.</description>
 <attribute name="SPICEPREFIX" value="R" x="74" y="10" size="1.778" layer="27" display="off"/>
 <attribute name="VALUE" x="71.7394" y="9.365" size="1.27" layer="27" ratio="10"/>
 </element>
-<element name="C1" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="" x="87" y="38" smashed="yes">
+<element name="C1" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="10uF" x="87" y="38" smashed="yes">
 <attribute name="NAME" x="85.349" y="39.778" size="1.27" layer="25" ratio="10"/>
 <attribute name="VALUE" x="85.349" y="34.952" size="1.27" layer="27" ratio="10"/>
 </element>
-<element name="C2" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="" x="88" y="33" smashed="yes">
+<element name="C2" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="10uF" x="88" y="33" smashed="yes">
 <attribute name="NAME" x="86.349" y="34.778" size="1.27" layer="25" ratio="10"/>
 <attribute name="VALUE" x="86.349" y="29.952" size="1.27" layer="27" ratio="10"/>
 </element>
