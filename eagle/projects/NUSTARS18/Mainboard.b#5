@@ -23,12 +23,12 @@
 <layer number="13" name="Route13" color="4" fill="5" visible="no" active="yes"/>
 <layer number="14" name="Route14" color="1" fill="6" visible="no" active="yes"/>
 <layer number="15" name="Route15" color="4" fill="6" visible="no" active="yes"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="yes"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="20" name="Dimension" color="24" fill="1" visible="yes" active="yes"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="yes"/>
 <layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
@@ -44,8 +44,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="yes"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="yes"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="yes"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="no" active="yes"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="yes" active="yes"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
@@ -58,7 +58,7 @@
 <layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="yes"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
@@ -175,6 +175,98 @@ REV 2019-1-18</text>
 <hole x="3" y="3" drill="2.7"/>
 <hole x="3" y="45" drill="2.7"/>
 <hole x="102" y="45" drill="2.7"/>
+<hole x="102" y="3" drill="2.7"/>
+<polygon width="0.025" layer="38">
+<vertex x="47.9746" y="11.7112"/>
+<vertex x="47.9746" y="14.3274"/>
+<vertex x="47.4412" y="14.3274"/>
+<vertex x="45.8918" y="12.5494"/>
+<vertex x="45.8918" y="14.3274"/>
+<vertex x="45.3584" y="14.3274"/>
+<vertex x="45.3584" y="11.6858"/>
+<vertex x="45.8664" y="11.6858"/>
+<vertex x="47.4666" y="13.5146"/>
+<vertex x="47.4666" y="11.6858"/>
+<vertex x="47.9746" y="11.6858"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="42.7422" y="14.3274"/>
+<vertex x="42.1834" y="14.3274"/>
+<vertex x="42.1834" y="12.2192"/>
+<vertex x="40.634" y="12.2192"/>
+<vertex x="40.634" y="14.3274"/>
+<vertex x="40.0752" y="14.3274"/>
+<vertex x="40.0752" y="11.7112"/>
+<vertex x="42.7422" y="11.7112"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="37.4336" y="11.6858"/>
+<vertex x="34.792" y="11.6858"/>
+<vertex x="34.792" y="13.2606"/>
+<vertex x="36.9256" y="13.2606"/>
+<vertex x="36.9256" y="13.794"/>
+<vertex x="34.792" y="13.794"/>
+<vertex x="34.792" y="14.3274"/>
+<vertex x="37.4336" y="14.3274"/>
+<vertex x="37.4336" y="12.7272"/>
+<vertex x="35.3254" y="12.7272"/>
+<vertex x="35.3254" y="12.2192"/>
+<vertex x="37.4336" y="12.2192"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="32.1758" y="14.3528"/>
+<vertex x="29.5342" y="14.3528"/>
+<vertex x="29.5342" y="13.794"/>
+<vertex x="30.601" y="13.794"/>
+<vertex x="30.601" y="11.6858"/>
+<vertex x="31.1344" y="11.6858"/>
+<vertex x="31.1344" y="13.794"/>
+<vertex x="32.1758" y="13.794"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="21.6348" y="11.6858"/>
+<vertex x="21.6348" y="14.3274"/>
+<vertex x="19.0186" y="14.3274"/>
+<vertex x="19.0186" y="12.7526"/>
+<vertex x="19.8568" y="12.7526"/>
+<vertex x="19.8568" y="13.286"/>
+<vertex x="19.552" y="13.286"/>
+<vertex x="19.552" y="13.794"/>
+<vertex x="21.1268" y="13.794"/>
+<vertex x="21.1268" y="11.6858"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="19.6536" y="11.6858"/>
+<vertex x="18.9424" y="11.6858"/>
+<vertex x="19.8568" y="12.7526"/>
+<vertex x="19.8568" y="13.286"/>
+<vertex x="21.1014" y="13.286"/>
+<vertex x="21.1014" y="12.7526"/>
+<vertex x="20.5934" y="12.7526"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="26.156" y="14.3528"/>
+<vertex x="25.5718" y="14.3528"/>
+<vertex x="24.505" y="11.6858"/>
+<vertex x="25.14" y="11.6858"/>
+<vertex x="25.8512" y="13.5654"/>
+<vertex x="26.6386" y="11.6858"/>
+<vertex x="27.2228" y="11.6858"/>
+</polygon>
+<polygon width="0.025" layer="38">
+<vertex x="13.6846" y="14.302"/>
+<vertex x="16.3262" y="14.302"/>
+<vertex x="16.3262" y="12.7272"/>
+<vertex x="14.1926" y="12.7272"/>
+<vertex x="14.1926" y="12.1938"/>
+<vertex x="16.3262" y="12.1938"/>
+<vertex x="16.3262" y="11.6604"/>
+<vertex x="13.6846" y="11.6604"/>
+<vertex x="13.6846" y="13.2606"/>
+<vertex x="15.7928" y="13.2606"/>
+<vertex x="15.7928" y="13.7686"/>
+<vertex x="13.6846" y="13.7686"/>
+</polygon>
 </plain>
 <libraries>
 <library name="M0">
@@ -1843,11 +1935,11 @@ design rules under a new name.</description>
 <attribute name="SPICEPREFIX" value="R" x="74" y="10" size="1.778" layer="27" display="off"/>
 <attribute name="VALUE" x="71.7394" y="9.365" size="1.27" layer="27" ratio="10"/>
 </element>
-<element name="C1" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="" x="87" y="38" smashed="yes">
+<element name="C1" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="10uF" x="87" y="38" smashed="yes">
 <attribute name="NAME" x="85.349" y="39.778" size="1.27" layer="25" ratio="10"/>
 <attribute name="VALUE" x="85.349" y="34.952" size="1.27" layer="27" ratio="10"/>
 </element>
-<element name="C2" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="" x="88" y="33" smashed="yes">
+<element name="C2" library="capacitor-wima" library_urn="urn:adsk.eagle:library:116" package="C2.5-3" package3d_urn="urn:adsk.eagle:package:5436/1" value="10uF" x="88" y="33" smashed="yes">
 <attribute name="NAME" x="86.349" y="34.778" size="1.27" layer="25" ratio="10"/>
 <attribute name="VALUE" x="86.349" y="29.952" size="1.27" layer="27" ratio="10"/>
 </element>
@@ -2007,9 +2099,11 @@ design rules under a new name.</description>
 <wire x1="83.64165" y1="33" x2="86.73" y2="33" width="0" layer="19" extent="1-1"/>
 <wire x1="83.54" y1="33.16" x2="83.54" y2="33.10165" width="0" layer="19" extent="1-1"/>
 </signal>
+<signal name="H">
+</signal>
 </signals>
 <mfgpreviewcolors>
-<mfgpreviewcolor name="soldermaskcolor" color="0xC8008000"/>
+<mfgpreviewcolor name="soldermaskcolor" color="0xC8000000"/>
 <mfgpreviewcolor name="silkscreencolor" color="0xFFFEFEFE"/>
 <mfgpreviewcolor name="backgroundcolor" color="0xFF282828"/>
 <mfgpreviewcolor name="coppercolor" color="0xFFFFBF00"/>
