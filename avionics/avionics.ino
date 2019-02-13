@@ -25,7 +25,7 @@ void setup() {
   delay(1000);
 
   gps = new GPS();
-  //alt = new Altimeter();
+  alt = new Altimeter();
   acc = new Accelerometer();
 
   /* Radio code
@@ -62,9 +62,9 @@ digitalWrite(RFM95_RST, HIGH);
 void loop() {
   delay(50);
   gps->tick();
-  //alt->tick();
+  alt->tick();
   acc->tick();
-  //Serial.println(gps->getSat());
+  Serial.println(gps->getSat());
   Serial.println(acc->getAcceleration(1));
 
   /* Radio code
@@ -77,4 +77,3 @@ void loop() {
   */
   
 }
-
