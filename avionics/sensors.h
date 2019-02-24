@@ -8,10 +8,10 @@
 #include <Adafruit_BMP280.h>
 #endif
 
-//#include <string>
 #include <Adafruit_GPS.h> //TODO: plz add include guards
-//#include <SoftwareSerial.h> //TODO: Make sure this isn't needed
 #include <TinyGPS++.h>
+
+#define BMP_ADDR 0x77
 
 namespace nustars {
     static const int X_AXIS = 0;
@@ -23,21 +23,35 @@ namespace nustars {
     };
 
     /**
-     * Adafruit BNO, the accelerometer
+     * Adafruit BNO, the IMU
      */
-    class Accelerometer: public Sensor {
+    class IMU: public Sensor {
     private:
         Adafruit_BNO055 bno;
-        int lastX;
-        int modifierX;
-        int* orientation;
-        int baseAlt;
+        float* orientation;
+        float* acc;
+        float* gyro;
     public:
-        Accelerometer();
+        IMU();
         void tick() override;
-        int getOrientation(int axis);
-        int getAcceleration(int axis);
+        void reconnect();
+        float getOrientation(int axis);
+        float getAcceleration(int axis);
+        float getGyro(int axis);
     };
+
+    /**
+     * Adafruit ADXL377, the analog accelerator
+     */
+     class ADXL: public Sensor {
+      private:
+        float x, y, z;
+        int xPin, yPin, zPin;
+      public:
+        ADXL(int xPin, int yPin, int zPin);
+        void tick() override;
+        float getAcceleration(int axis);
+     };
 
     /**
      * Adafruit BME, the altimeter
@@ -45,14 +59,14 @@ namespace nustars {
     class Altimeter: public Sensor {
     private:
         Adafruit_BMP280 bme;
-        int temp, pressure, alt, baseAlt;
+        float temp, pressure, alt, baseAlt;
         void setBaseAlt();
     public:
         Altimeter();
         void tick() override;
-        int getTemp();
-        int getPressure();
-        int getAltitude();
+        float getTemp();
+        float getPressure();
+        float getAltitude();
     };
 
     class GPS: public Sensor {
