@@ -25,6 +25,6 @@ namespace nustars {
     }
 
     void Radio::transmit(uint8_t* x, uint8_t length) {
-        return;
+        rf95->send(x, length);
     }
 }
