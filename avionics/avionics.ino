@@ -1,80 +1,138 @@
 #include <SPI.h>
 #include <Wire.h>
-#include <RH_RF95.h>
 #include "sensors.h"
+#include <Adafruit_NeoPixel.h>
+#include "radio.h"
+#include <Servo.h>
+// setting debug stuff
+#define DEBUG 1
+int divisor = 1; 
 
-#define RFM95_CS 8
-#define RFM95_RST 4
-#define RFM95_INT 3
-#define RF95_FREQ 915.0
+// setting pins for raven 0A, etc
+int r0a = 10; 
+int r0b = 11; 
+int r1a = 12; 
+int r1b = 13; 
+// variables to store values for each pin
+int val0a = 0; 
+int val0b = 0;
+int val1a = 0; 
+int val1b = 0;
+// setting up servo
+Servo myservo;
 
 using namespace nustars;
 
-RH_RF95 rf95(RFM95_CS, RFM95_INT);
-
 GPS* gps;
 Altimeter* alt;
-Accelerometer* acc;
+IMU* imux;
+ADXL* adxl;
+Radio* radio;
 
-uint8_t packetspam[250];
+Adafruit_NeoPixel led = Adafruit_NeoPixel(1, 8);
+
+uint8_t packetBuffer[220];
+char* tag = "NUx ";
+int tagLength = 4;
+
+union fusion_t {
+    float f;
+    int i;
+    uint8_t b[sizeof(float) > sizeof(int) ? sizeof(float) : sizeof(int)];
+};
+
+fusion_t fusion;
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial);
-  Wire.begin();
-  delay(1000);
-
-  gps = new GPS();
-  //alt = new Altimeter();
-  acc = new Accelerometer();
-
-  /* Radio code
-  Serial.println("Starting setup");
-  pinMode(RFM95_RST, OUTPUT);
-
-digitalWrite(RFM95_RST, HIGH);
-  delay(10);
-  digitalWrite(RFM95_RST, LOW);
-  delay(10);
-  digitalWrite(RFM95_RST, HIGH);
-  delay(10);
   
-  pinMode(13, OUTPUT);
-  while (!rf95.init()) {
-    Serial.println("LoRa radio init failed");
-    while (1);
-  }
+    if(DEBUG){
+      divisor = 4; 
+    }
+  
+    led.begin();
+    setLED(255/divisor, 0, 0); //RED: we are booting
+    
+    Serial.begin(9600);
+    if(DEBUG)
+    {
+      while (!Serial);
+    }
+    Wire.begin();
+    delay(1000);
+    
+    gps = new GPS();
+    alt = new Altimeter();
+    imux = new IMU();
+    adxl = new ADXL(A1, A2, A4);
+    radio = new Radio(A0, A5, A3);
 
-  if (!rf95.setFrequency(RF95_FREQ)) {
-    Serial.println("setFrequency failed");
-    while (1);
-  }
- 
-  rf95.setTxPower(23, false);
+    for (int i = 0; i < tagLength; i++) {
+        packetBuffer[i] = tag[i];
+    }
+    
+    Serial.println("finished setup");
+    setLED(80/divisor, 0, 120/divisor); //PURPLE: everything okay
 
-  for (int i = 0; i < 250; i++) {
-    packetspam[i] = 'A';
-  }
-  Serial.println("finished setup");
-  */
+    // set up pins
+    pinMode(r0a, INPUT); 
+    pinMode(r0b, INPUT); 
+    pinMode(r1a, INPUT); 
+    pinMode(r1b, INPUT); 
+    
 }
 
 void loop() {
-  delay(50);
-  gps->tick();
-  //alt->tick();
-  acc->tick();
-  //Serial.println(gps->getSat());
-  Serial.println(acc->getAcceleration(1));
+    
+    //update the sensors
+    gps->tick();
+    alt->tick();
+    imux->tick();
+    adxl->tick();
 
-  /* Radio code
-  Serial.println("Transmitting");
-  digitalWrite(13, HIGH);
-  rf95.send(packetspam, 250);
-  digitalWrite(13, LOW);
-  //delay(1000);
-  rf95.waitPacketSent();
-  */
-  
+    int bufferLocation = tagLength; //offset for packet identifying prefix
+
+
+    //WARNING: No verification is being done to ensure data length. Keep it under byte limit please
+    //package the current time
+    fusion.i = millis();
+    pack(fusion, packetBuffer, bufferLocation, sizeof(int));
+
+    //package the data from the IMUx
+    fusion.f = imux->getAcceleration(X_AXIS);
+    pack(fusion, packetBuffer, bufferLocation, sizeof(float));
+    fusion.f = imux->getAcceleration(Y_AXIS);
+    pack(fusion, packetBuffer, bufferLocation, sizeof(float));
+    fusion.f = imux->getAcceleration(Z_AXIS);
+    pack(fusion, packetBuffer, bufferLocation, sizeof(float));
+
+    //transmit the data
+    radio->transmit(packetBuffer, bufferLocation + 1);
+
+
 }
 
+void setLED(uint8_t r, uint8_t g, uint8_t b) {
+    led.setPixelColor(0, r/divisor, g/divisor, b/divisor);
+    led.show();
+}
+
+/**
+ * Packs fusion data into a buffer, incrementing index by size
+ * @param fuz fusion_t to pack
+ * @param buff buffer to place the data into
+ * @param index starting index of buff; incremented by size upon return
+ * @param size how many bytes of data to pack
+ */
+void pack(fusion_t fuz, uint8_t* buff, int &index, uint8_t size) {
+    for (int i = 0; i < size; i++) {
+        buff[index++] = fuz.b[i];
+    }
+}
+
+void raven(){
+    // read the pin
+    val0a = digitalRead(r0a); 
+    val0b = digitalRead(r0b); 
+    val1a = digitalRead(r1a); 
+    val1b = digitalRead(r1b);
+}

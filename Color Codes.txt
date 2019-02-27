@@ -1,0 +1,9 @@
+Startup: white
+Startup went wrong: red
+everything okay: purple
+packet about to be transmitted: yellow
+ADS deployment: green (potentially differentiate into light and dark)
+ADS detraction: blue (potentially differentiate into light and dark)
+limit switches (deployment): aquamarine
+limit switches (detraction): pink (light)
+Something else went wrong/not receiving data: orange
