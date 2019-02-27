@@ -3,6 +3,23 @@
 #include "sensors.h"
 #include <Adafruit_NeoPixel.h>
 #include "radio.h"
+#include <Servo.h>
+// setting debug stuff
+#define DEBUG 1
+int divisor = 1; 
+
+// setting pins for raven 0A, etc
+int r0a = 10; 
+int r0b = 11; 
+int r1a = 12; 
+int r1b = 13; 
+// variables to store values for each pin
+int val0a = 0; 
+int val0b = 0;
+int val1a = 0; 
+int val1b = 0;
+// setting up servo
+Servo myservo;
 
 using namespace nustars;
 
@@ -25,14 +42,22 @@ union fusion_t {
 fusion_t fusion;
 
 void setup() {
+  
+    if(DEBUG){
+      divisor = 4; 
+    }
+  
     led.begin();
-    setLED(255, 255, 0); //YELLOW: we are booting
+    setLED(255/divisor, 0, 0); //RED: we are booting
     
     Serial.begin(9600);
-    while (!Serial);
+    if(DEBUG)
+    {
+      while (!Serial);
+    }
     Wire.begin();
     delay(1000);
-
+    
     gps = new GPS();
     alt = new Altimeter();
     imux = new IMU();
@@ -42,11 +67,18 @@ void setup() {
     packetBuffer[0] = 'N';
     packetBuffer[1] = 'U';
     Serial.println("finished setup");
-    setLED(80, 0, 120);
+    setLED(80/divisor, 0, 120/divisor); //PURPLE: everything okay
+
+    // set up pins
+    pinMode(r0a, INPUT); 
+    pinMode(r0b, INPUT); 
+    pinMode(r1a, INPUT); 
+    pinMode(r1b, INPUT); 
     
 }
 
 void loop() {
+    
     //update the sensors
     gps->tick();
     alt->tick();
@@ -72,10 +104,11 @@ void loop() {
     //transmit the data
     radio->transmit(packetBuffer, bufferLocation + 1);
 
+
 }
 
 void setLED(uint8_t r, uint8_t g, uint8_t b) {
-    led.setPixelColor(0, r, g, b);
+    led.setPixelColor(0, r/divisor, g/divisor, b/divisor);
     led.show();
 }
 
@@ -90,4 +123,12 @@ void pack(fusion_t fuz, uint8_t* buff, int &index, uint8_t size) {
     for (int i = 0; i < size; i++) {
         buff[index++] = fuz.b[i];
     }
+}
+
+void raven(){
+    // read the pin
+    val0a = digitalRead(r0a); 
+    val0b = digitalRead(r0b); 
+    val1a = digitalRead(r1a); 
+    val1b = digitalRead(r1b);
 }
