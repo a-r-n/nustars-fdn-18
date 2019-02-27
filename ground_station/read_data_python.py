@@ -1,13 +1,33 @@
+import matplotlib.pyplot as plt
 import serial
-from time import sleep
-usb_port = 'COM15'
+usb_port = '/dev/cu.usbmodem14301'
 ser = serial.Serial(usb_port, 9600)
-counter = 32
-while True:
-    counter += 1
-    ser.write(counter)
-	print("%i\n" % counter)
-	print(ser.readline())
+from time import sleep
+
+counter = 0
+l = ser.readline()
+
+while l != b'BEGIN\r\n':
+	l = ser.readline()
+l = ser.readline()
+
+
+A = [[],[]]
+I = []
+plt.ion()
+fig1 = plt.figure()
+ax = fig1.add_subplot(111)
+
+while counter < 10:
+	I.append(counter)
+	counter += 1
+	print(l)
+	data = l.split();
+	A[0].append(int(data[1]))
+	A[1].append(int(data[2]))
+	ax.plot(I, A[0])
+	fig1.canvas.draw()
+
+	l = ser.readline()
 	sleep(.1)
-	if counter == 255:
-		counter = 32
+ser.close()

@@ -15,6 +15,8 @@ Radio* radio;
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, 8);
 
 uint8_t packetBuffer[220];
+char* tag = "NUx ";
+int tagLength = 4;
 
 union fusion_t {
     float f;
@@ -39,8 +41,10 @@ void setup() {
     adxl = new ADXL(A1, A2, A4);
     radio = new Radio(A0, A5, A3);
 
-    packetBuffer[0] = 'N';
-    packetBuffer[1] = 'U';
+    for (int i = 0; i < tagLength; i++) {
+        packetBuffer[i] = tag[i];
+    }
+    
     Serial.println("finished setup");
     setLED(80, 0, 120);
     
@@ -53,7 +57,7 @@ void loop() {
     imux->tick();
     adxl->tick();
 
-    int bufferLocation = 2; //offset for packet identifying prefix
+    int bufferLocation = tagLength; //offset for packet identifying prefix
 
 
     //WARNING: No verification is being done to ensure data length. Keep it under byte limit please
