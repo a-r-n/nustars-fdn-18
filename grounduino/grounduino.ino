@@ -10,7 +10,13 @@
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
+char* printBuffer;
+uint8_t* buf;
+
 void setup() {
+  printBuffer = (char*)malloc(255);
+  buf = (uint8_t*)malloc(255);
+  delay(5000);
   Serial.begin(9600);
   pinMode(RFM95_RST, OUTPUT);
   digitalWrite(RFM95_RST, HIGH);
@@ -19,7 +25,7 @@ void setup() {
   delay(10);
   digitalWrite(RFM95_RST, HIGH);
   delay(10);
-  while (!Serial);
+  //while (!Serial);
   while (!rf95.init()) {
     Serial.println("LoRa radio init failed");
     while (1);
@@ -37,9 +43,9 @@ int numbytes = 0;
 
 void loop() {
   while (!rf95.available());
-  uint8_t buf[250];
-  uint8_t len = sizeof(buf);
-  
+  uint8_t len = 255;
   rf95.recv(buf, &len);
-  Serial.println((char*) buf);
+  if (Serial.availableForWrite()) {
+    Serial.write(buf, len);
+  }
 }

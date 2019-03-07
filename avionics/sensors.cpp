@@ -93,7 +93,7 @@ namespace nustars {
             case Z_AXIS:
                 rawData = analogRead(zPin);
         }
-        return (float)(rawData);
+        return (float)(rawData) * 400.0 / 1023.0 - 200; //this may not be completely accurate, but we are doing this to get mvp by the weekend
     }
 
 
