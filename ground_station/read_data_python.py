@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import serial
-usb_port = 'COM12'
+usb_port = '/dev/cu.usbmodem14301' # different for different computers
 ser = serial.Serial(usb_port, 9600)
 from time import sleep
 import re
