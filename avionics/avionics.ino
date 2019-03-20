@@ -233,8 +233,6 @@ void loop() {
     fusion.b[0] = raven;
     pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t));
 
-    Serial.println(bufferLocation + 1);
-
     
     /* //test the packing
     for (int i = 0; i < bufferLocation + 1; i++) {

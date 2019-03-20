@@ -25,7 +25,7 @@ void setup() {
   delay(10);
   digitalWrite(RFM95_RST, HIGH);
   delay(10);
-  //while (!Serial);
+  while (!Serial);
   while (!rf95.init()) {
     Serial.println("LoRa radio init failed");
     while (1);
@@ -42,10 +42,12 @@ void setup() {
 int numbytes = 0;
 
 void loop() {
+  digitalWrite(13, HIGH);
   while (!rf95.available());
   uint8_t len = 255;
   rf95.recv(buf, &len);
   if (Serial.availableForWrite()) {
     Serial.write(buf, len);
   }
+  digitalWrite(13, LOW);
 }
