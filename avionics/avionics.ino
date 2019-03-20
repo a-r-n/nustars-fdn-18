@@ -209,14 +209,14 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
 
     //GPS
-    fusion.i = gps->getSat();
-    pack(fusion, packetBuffer, bufferLocation, sizeof(int));
     fusion.f = gps->getLat();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = gps->getLng();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = gps->getAlt();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
+    fusion.i = gps->getSat();
+    pack(fusion, packetBuffer, bufferLocation, sizeof(int));
 
     //Raven binary
     uint8_t raven = 0;
