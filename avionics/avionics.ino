@@ -6,6 +6,7 @@
 #include <Servo.h>
 #include <Adafruit_SPIFlash.h>
 #include <Adafruit_SPIFlash_FatFs.h>
+#include <Scheduler.h>
 
 // FLASH DEFS TEMPORARY NO TIME
 
@@ -29,14 +30,41 @@
 #define R1A 12 
 #define R1B 13
 
-#define TSKIP_FACTOR 5 //how many reads to skip before transmitting (greatly reduce loop time) [temporary] TODO: implement this with interrupts
-#define WSKIP_FACTOR 50 //how many reads to skip before flash writing (save loop time and flash space). Currently rated for approximately 5-10 hours of logging...
-#define CSKIP_FACTOR 2 //unused
-
+#define PACKET_SIZE 70 //this is for optimization and ease of programming reasons... must be updated :(
+#define WRITE_BUFFER_SIZE (2048 / PACKET_SIZE) * PACKET_SIZE
 
 // setting debug stuff
 #define DEBUG false
 int divisor = 1; 
+
+//suspecting a race condition in the compiler or something else insane because this has to be moved sometimes for it to compile :O
+union fusion_t {
+    float f;
+    int i;
+    long l;
+    uint8_t b[sizeof(long)];
+};
+
+
+//VERY TEMPORARY MEMORY CHECKING THING
+    #ifdef __arm__
+    // should use uinstd.h to define sbrk but Due causes a conflict
+    extern "C" char* sbrk(int incr);
+    #else  // __ARM__
+    extern char *__brkval;
+    #endif  // __arm__
+     
+    int freeMemory() {
+      char top;
+    #ifdef __arm__
+      return &top - reinterpret_cast<char*>(sbrk(0));
+    #elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+      return &top - __brkval;
+    #else  // __arm__
+      return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+    #endif  // __arm__
+    }
+    
 
 //TEMPORARY
 Adafruit_SPIFlash flash(FLASH_SS, &FLASH_SPI_PORT);     // Use hardware SPI
@@ -53,9 +81,6 @@ int val0b = 0;
 int val1a = 0; 
 int val1b = 0;
 
-int tskip_step = 0;
-int wskip_step = 0;
-
 using namespace nustars;
 
 GPS* gps;
@@ -66,23 +91,23 @@ Radio* radio;
 
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, 8);
 
-uint8_t packetBuffer[220];
-uint8_t writeBuffer[4096];
-int wbPos = 0;
+uint8_t packetBuffer[PACKET_SIZE];
+uint8_t writeBuffer[WRITE_BUFFER_SIZE]; //create the buffer of the size which is the max multiple of packet size
+uint8_t writeBufferCopy[WRITE_BUFFER_SIZE]; //mind the stack frame limits, that's why this HAS to be global. Heap fragmentation not worth risk.
+int wbPos = 0; //henceforth this is now a RING BUFFER by royal decree on 2019-4-12
+int bufferLocation; //for packetBuffer
 
 char* tag = "NUx ";
 int tagLength = 4;
 
-char* fn;
+char* fn; //file name for the flash cell
 
-union fusion_t {
-    float f;
-    int i;
-    long l;
-    uint8_t b[sizeof(long)];
-};
+//placing a variable here broke the union somehow, be cautious :(
 
 fusion_t fusion;
+
+bool radioLock = false; //for communication between the main loop and radio signal loop
+bool writeSignal = false; //for communicaiton between the main loop and the write routine, this essentially makes it a non-blocking conditional execution
 
 void setup() {
     if(DEBUG){
@@ -92,7 +117,7 @@ void setup() {
     led.begin();
     setLED(255/divisor, 0, 0); //RED: we are booting
     
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     //wait for serial connection if we are in debug mode
     if(DEBUG)
@@ -113,8 +138,8 @@ void setup() {
   // First call begin to mount the filesystem.  Check that it returns true
   // to make sure the filesystem was mounted.
   if (!fatfs.begin()) {
-    Serial.println("Error, failed to mount newly formatted filesystem!");
-    Serial.println("Was the flash chip formatted with the fatfs_format example?");
+    Serial.println("Error, failed to mount filesystem!");
+    Serial.println("Chip must be flashed with CircuitPython before use! Otherwise, this error may indicate a previous write panic.");
     while(1);
   }
   Serial.println("Mounted filesystem!");
@@ -128,22 +153,29 @@ void setup() {
       dataID++;
     } while (fatfs.exists(fn));
 
+    File writeFile = fatfs.open(fn, FILE_WRITE);
+    if (!writeFile) {
+      Serial.println("Couldn't open the file!? WHyAsd?");
+      while(1);
+    }
+    writeFile.close();
     Serial.print("found file that doesn't exist yet: ");
     Serial.println(fn);
 
   //END TEMPORARY
   
     gps = new GPS();
-    Serial.println("Q: Where");
+    Serial.println("Q: When");
     alt = new Altimeter();
-    Serial.println("are");
+    Serial.println("do");
     imux = new IMU();
     Serial.println("we");
-    adxl = new ADXL(A1, A2, A4);
-    Serial.println("?");
-    radio = new Radio(A0, A5, A3);
+    adxl = new ADXL(A1, A2, A3);
+    Serial.println("all");
+    radio = new Radio(A5, A4, A0);
+    Serial.println("end?");
 
-    Serial.println("A: Writing the tag!");
+    Serial.println("A: Not today!");
     for (int i = 0; i < tagLength; i++) {
         packetBuffer[i] = tag[i];
     }
@@ -157,22 +189,29 @@ void setup() {
     pinMode(R1A, INPUT); 
     pinMode(R1B, INPUT); 
 
+    Scheduler.startLoop(writeFlash);
+    Scheduler.startLoop(writeRadio);
 
 
     
     Serial.println("finished setup");
 }
 
+double moveTheAverage(double xn2, double xn1, double x0, double x1, double x2) {
+  return (xn1 + x0 + x1 + (x2 + xn2)/2) / 4;
+}
+
 void loop() {
     //update the sensors
     gps->tick();
-    alt->tick();
-    imux->tick();
+    //alt->tick();
+    //imux->tick();
     adxl->tick();
 
-    int bufferLocation = tagLength; //offset for packet identifying prefix
 
-
+    if (!radioLock) { //we are only interested in flashing data which is also transmitted at these rates
+    bufferLocation = tagLength; //offset for packet identifying prefix
+    
     //WARNING: No verification is being done to ensure data length. Keep it under byte limit please
     //package the current time
     fusion.l = millis();
@@ -187,12 +226,15 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
 
     //IMUx rotation
+    /*
     fusion.f = imux->getOrientation(X_AXIS);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = imux->getOrientation(Y_AXIS);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = imux->getOrientation(Z_AXIS);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
+    */
+    
 
     //ADXL acceleration
     fusion.f = adxl->getAcceleration(X_AXIS);
@@ -203,10 +245,12 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
 
     //BMP
+    /*
     fusion.f = alt->getPressure();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = alt->getTemp();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
+    */
 
     //GPS
     fusion.f = gps->getLat();
@@ -217,7 +261,7 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.i = gps->getSat();
     pack(fusion, packetBuffer, bufferLocation, sizeof(int));
-
+    
     //Raven binary
     uint8_t raven = 0;
     val0a = digitalRead(R0A) == LOW; 
@@ -231,55 +275,56 @@ void loop() {
     raven |= val1b << 3;
 
     fusion.b[0] = raven;
-    pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t));
+    pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t)); 
 
-    
-    /* //test the packing
-    for (int i = 0; i < bufferLocation + 1; i++) {
-      Serial.print(packetBuffer[i]);
-      Serial.print(" ");
-      if (i%4 == 3) {
-        Serial.println();
-      }
+    if (!writeSignal) //copy nothing if the thing is still waiting to do it!
+      //memcpy(writeBuffer + wbPos, packetBuffer, PACKET_SIZE);
+      wbPos += PACKET_SIZE;
+      if (WRITE_BUFFER_SIZE - wbPos <= PACKET_SIZE) writeSignal = true;
     }
-    for (int i = 4; i < 8; i++) {
-      fusion.b[i-4] = packetBuffer[i];
-    }
-    */
-    
-    //Serial.println(fusion.f);
-    //transmit the data
-    if (!(tskip_step % TSKIP_FACTOR)) {
-      radio->transmit(packetBuffer, bufferLocation + 1);
-      for (int i = 0; i < bufferLocation; i++) {
-        writeBuffer[wbPos + i] = packetBuffer[i];
-      }
-    }
-      
-    tskip_step++;
 
+    //Serial.println(wbPos);
     
-    if (!(wskip_step % WSKIP_FACTOR)) {
-      File writeFile = fatfs.open(fn, FILE_WRITE);
-      if (!writeFile && DEBUG) {
-        Serial.println("Error, failed to open file for writing!");
-        while(1);
-      } else if (writeFile) {
-        writeFile.write(packetBuffer, bufferLocation + 1);
-        Serial.println("wrote");
-        writeFile.close();
-        wbPos = 0;
-      } else {
-        setLED(255/divisor, 255/divisor, 0);
-      }
-    }
-    wskip_step++;
-
+    yield(); //if you delete this the telemetry gods will kill you and your family :(
 }
 
-void setLED(uint8_t r, uint8_t g, uint8_t b) {
-    led.setPixelColor(0, r/divisor, g/divisor, b/divisor);
-    led.show();
+//WARNING_TODO: this hasn't implemented the buffer duplication!
+void writeFlash() {
+  if (writeSignal) {
+    int cpyLen = wbPos + 1;
+    memcpy(writeBufferCopy, writeBuffer, cpyLen);
+    wbPos = 0;
+    writeSignal = false;
+    //long x = millis();
+    File writeFile = fatfs.open(fn, FILE_WRITE);
+    if (!writeFile && DEBUG) {
+      Serial.println("Error, failed to open file for writing!");
+      while(1);
+    } else if (writeFile) {
+      writeFile.write(writeBufferCopy, cpyLen);
+      writeFile.close();
+    } else {
+      setLED(255/divisor, 255/divisor, 0);
+    }
+    //Serial.println("--------------------------------WROTE"); //Serial.println(x - millis());
+  }
+  delay(10);
+  yield();
+}
+
+/**
+ * Interesting note: the scheduler will not initiate this function until it has exited, so a stack overflow shouldn't be possible here.
+ * Therefore, we will let it just run aqap
+ */
+void writeRadio() {
+  radioLock = true; //signal the main loop not to update the packet buffer while the radio is transmitting
+  //consider making this a global (evil) so that it doesn't need to be reallocated every time (possibly expensive!)
+  uint8_t localBuffer[PACKET_SIZE]; //we create a local copy of the information in case the main loop overwrites it during scheduled time (conservative policy)
+  long x = millis();
+  memcpy(localBuffer, packetBuffer, PACKET_SIZE);
+  radio->transmit(localBuffer, PACKET_SIZE);
+  radioLock = false;
+  yield();
 }
 
 /**
@@ -293,6 +338,11 @@ void pack(fusion_t fuz, uint8_t* buff, int &index, uint8_t size) {
     for (int i = 0; i < size; i++) {
         buff[index++] = fuz.b[i];
     }
+}
+
+void setLED(uint8_t r, uint8_t g, uint8_t b) {
+    led.setPixelColor(0, r/divisor, g/divisor, b/divisor);
+    led.show();
 }
 
 /* //TODO: Implement this. Disabled to get things working for launch.
