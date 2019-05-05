@@ -1,5 +1,13 @@
-dfile = fopen('combo.hex');
-data = fread(dfile, Inf);
+port_name = "/dev/cu.usbmodem14301";
+BaudRate = 9600;
+s = serial(port_name, 'BaudRate', BaudRate);
+
+fopen(s);
+fprintf(s, '*IDN?');
+data = fscanf(s);
+fclose(s);
+%dfile = fopen('combo.hex');
+%data = fread(dfile, Inf);
 dataLength = length(data)/70;
 
 entries = [];
@@ -41,6 +49,6 @@ pressure = pressure(tord);
 absAccMUX = sqrt(xAccMUX.^2 + yAccMUX.^2 + zAccMUX.^2);
 
 
-dv = diff(pressure)./diff(times);
+dv = diff(pressure)./cast(diff(times),'single');
 
 plot(times, absAccMUX);
