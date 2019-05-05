@@ -10,8 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c769010b-3530-4317-bffe-181a536973af" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/avionics.ino" beforeDir="false" afterPath="$PROJECT_DIR$/avionics.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensors.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/sensors.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -56,12 +56,13 @@
     <session id="1448121384">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="5" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.open.time.9" value="3" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -106,10 +107,7 @@
         <entry file="file://$PROJECT_DIR$/avionics.ino">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="497">
-              <caret line="332" column="1" lean-forward="true" selection-start-line="332" selection-start-column="1" selection-end-line="332" selection-end-column="1" />
-              <folding>
-                <element signature="e#8890#9300#0" />
-              </folding>
+              <caret line="374" column="1" selection-start-line="374" selection-start-column="1" selection-end-line="374" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -197,16 +195,17 @@
       <workItem from="1553469822565" duration="170000" />
       <workItem from="1553470015113" duration="656000" />
       <workItem from="1555043835168" duration="306000" />
+      <workItem from="1556486654031" duration="40000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7805000" />
+    <option name="totallyTimeSpent" value="7845000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="0" width="1928" height="1060" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19169329" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19382322" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -266,10 +265,7 @@
     <entry file="file://$PROJECT_DIR$/avionics.ino">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="497">
-          <caret line="332" column="1" lean-forward="true" selection-start-line="332" selection-start-column="1" selection-end-line="332" selection-end-column="1" />
-          <folding>
-            <element signature="e#8890#9300#0" />
-          </folding>
+          <caret line="374" column="1" selection-start-line="374" selection-start-column="1" selection-end-line="374" selection-end-column="1" />
         </state>
       </provider>
     </entry>

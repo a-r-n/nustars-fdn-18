@@ -109,6 +109,8 @@ fusion_t fusion;
 bool radioLock = false; //for communication between the main loop and radio signal loop
 bool writeSignal = false; //for communicaiton between the main loop and the write routine, this essentially makes it a non-blocking conditional execution
 
+double base_acc;
+
 void setup() {
     if(DEBUG){
       divisor = 4; 
@@ -180,8 +182,6 @@ void setup() {
         packetBuffer[i] = tag[i];
     }
     
-    
-    setLED(80/divisor, 0, 120/divisor); //PURPLE: everything okay
 
     // Raven detection pins
     pinMode(R0A, INPUT); 
@@ -189,23 +189,41 @@ void setup() {
     pinMode(R1A, INPUT); 
     pinMode(R1B, INPUT); 
 
+    setLED(120/divisor, 120/divisor, 0); //YELLOW: calibrate
+
+    base_acc = 0;
+    for (int i = 0; i < 20; i++) {
+      imux->tick();;
+      base_acc += sqrt(imux->getAcceleration(Y_AXIS)*imux->getAcceleration(Y_AXIS)+imux->getAcceleration(X_AXIS)*imux->getAcceleration(X_AXIS)+imux->getAcceleration(Z_AXIS)*imux->getAcceleration(Z_AXIS));
+      delay(200);
+    }
+
+    base_acc /= 19;
+
+    Serial.println(base_acc);
+
     Scheduler.startLoop(writeFlash);
     Scheduler.startLoop(writeRadio);
 
-
     
     Serial.println("finished setup");
+    setLED(80/divisor, 0, 120/divisor); //PURPLE: everything okay
 }
 
 double moveTheAverage(double xn2, double xn1, double x0, double x1, double x2) {
   return (xn1 + x0 + x1 + (x2 + xn2)/2) / 4;
 }
 
+double v = 0;
+long lastdt = millis();
+
+double maxAcc=0;
+
 void loop() {
     //update the sensors
     gps->tick();
-    //alt->tick();
-    //imux->tick();
+    alt->tick();
+    imux->tick();
     adxl->tick();
 
 
@@ -226,14 +244,14 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
 
     //IMUx rotation
-    /*
+    
     fusion.f = imux->getOrientation(X_AXIS);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = imux->getOrientation(Y_AXIS);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = imux->getOrientation(Z_AXIS);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
-    */
+    
     
 
     //ADXL acceleration
@@ -245,12 +263,11 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
 
     //BMP
-    /*
     fusion.f = alt->getPressure();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = alt->getTemp();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
-    */
+    
 
     //GPS
     fusion.f = gps->getLat();
@@ -283,7 +300,10 @@ void loop() {
       if (WRITE_BUFFER_SIZE - wbPos <= PACKET_SIZE) writeSignal = true;
     }
 
-    //Serial.println(wbPos);
+    maxAcc = (imux->getAcceleration(X_AXIS)) > maxAcc ? imux->getAcceleration(X_AXIS) : maxAcc;
+
+    //Serial.println(maxAcc);
+    //Serial.println(imux->getOrientation(X_AXIS));
     
     yield(); //if you delete this the telemetry gods will kill you and your family :(
 }
@@ -317,6 +337,7 @@ void writeFlash() {
  * Therefore, we will let it just run aqap
  */
 void writeRadio() {
+  Serial.println("TRANSMIT!");
   radioLock = true; //signal the main loop not to update the packet buffer while the radio is transmitting
   //consider making this a global (evil) so that it doesn't need to be reallocated every time (possibly expensive!)
   uint8_t localBuffer[PACKET_SIZE]; //we create a local copy of the information in case the main loop overwrites it during scheduled time (conservative policy)

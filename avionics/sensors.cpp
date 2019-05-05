@@ -20,6 +20,7 @@ namespace nustars {
             while (1);
         }
         bno.setExtCrystalUse(true);
+        //Select page ID 1 to write to the right register
     }
 
     /**
