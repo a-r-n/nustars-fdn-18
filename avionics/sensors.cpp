@@ -10,7 +10,7 @@ namespace nustars {
      * Initialize the BNO
      */
     IMU::IMU() {
-        bno = Adafruit_BNO055(55); //I2C address, probably.
+        bno = Adafruit_BNO055(); //I2C address, probably.
         orientation = new float[3];
         gyro = new float[3];
         acc = new float[3];

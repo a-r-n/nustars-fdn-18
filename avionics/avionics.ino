@@ -102,6 +102,8 @@ int bufferLocation; //for packetBuffer
 char* tag = "NUx ";
 int tagLength = 4;
 
+uint8_t checksum; //the wireless checksum as byte
+
 char* fn; //file name for the flash cell
 
 //placing a variable here broke the union somehow, be cautious :(
@@ -237,6 +239,8 @@ void loop() {
 
     if (!radioLock) { //we are only interested in flashing data which is also transmitted at these rates
     bufferLocation = tagLength; //offset for packet identifying prefix
+
+    checksum = 0; //clear the checksum!
     
     //WARNING: No verification is being done to ensure data length. Keep it under byte limit please
     //package the current time
@@ -304,6 +308,17 @@ void loop() {
     fusion.b[0] = raven;
     pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t)); 
 
+    //Finally, pack the checksum
+    fusion.b[0] = checksum;
+    uint8_t tmpsum = checksum; //note that this final pack call will reset the checksum to 0 by nature of XOR...
+    pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t));
+
+    
+
+    char msg[50];
+    sprintf(msg, "Checksum: 0x%x\n\0", tmpsum);
+    Serial.write(msg);
+
     if (!writeSignal) //copy nothing if the thing is still waiting to do it!
       //memcpy(writeBuffer + wbPos, packetBuffer, PACKET_SIZE);
       wbPos += PACKET_SIZE;
@@ -347,7 +362,7 @@ void writeFlash() {
  * Therefore, we will let it just run aqap
  */
 void writeRadio() {
-  Serial.println("TRANSMIT!");
+  //Serial.println("TRANSMIT!");
   radioLock = true; //signal the main loop not to update the packet buffer while the radio is transmitting
   //consider making this a global (evil) so that it doesn't need to be reallocated every time (possibly expensive!)
   uint8_t localBuffer[PACKET_SIZE]; //we create a local copy of the information in case the main loop overwrites it during scheduled time (conservative policy)
@@ -377,6 +392,7 @@ void servoSend() {
 void pack(fusion_t fuz, uint8_t* buff, int &index, uint8_t size) {
     for (int i = 0; i < size; i++) {
         buff[index++] = fuz.b[i];
+        checksum ^= fuz.b[i]; //XOR the checksum
     }
 }
 
