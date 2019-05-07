@@ -91,6 +91,8 @@ Radio* radio;
 
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, 8);
 
+Servo servo;
+
 uint8_t packetBuffer[PACKET_SIZE];
 uint8_t writeBuffer[WRITE_BUFFER_SIZE]; //create the buffer of the size which is the max multiple of packet size
 uint8_t writeBufferCopy[WRITE_BUFFER_SIZE]; //mind the stack frame limits, that's why this HAS to be global. Heap fragmentation not worth risk.
@@ -111,6 +113,8 @@ bool writeSignal = false; //for communicaiton between the main loop and the writ
 
 double base_acc;
 
+int servoPos;
+
 void setup() {
     if(DEBUG){
       divisor = 4; 
@@ -128,6 +132,9 @@ void setup() {
     }
     Wire.begin();
     delay(1000);
+
+    servo.attach(5);
+    servoPos = 0;
 
     //TEMPORARY WRITING
     // Initialize flash library and check its chip ID.
@@ -204,6 +211,7 @@ void setup() {
 
     Scheduler.startLoop(writeFlash);
     Scheduler.startLoop(writeRadio);
+    //Scheduler.startLoop(servoLoop);
 
     
     Serial.println("finished setup");
@@ -290,6 +298,8 @@ void loop() {
     raven |= val0b << 1;
     raven |= val1a << 2;
     raven |= val1b << 3;
+    
+    servoSend();
 
     fusion.b[0] = raven;
     pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t)); 
@@ -346,6 +356,15 @@ void writeRadio() {
   radio->transmit(localBuffer, PACKET_SIZE);
   radioLock = false;
   yield();
+}
+
+void servoSend() {
+  if (val1b || val0b) {
+    servoPos = 1500;
+  } else if (val1a || val0a) {
+    servoPos = 750;
+  }
+  servo.writeMicroseconds(servoPos);
 }
 
 /**
