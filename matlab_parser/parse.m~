@@ -81,9 +81,6 @@ absAccMUX = sqrt(xAccMUX.^2 + yAccMUX.^2 + zAccMUX.^2);
 
 dv = diff(pressure)./cast(diff(times),'single');
 
-end
-plot(times, absAccMUX);
-
 % Calculating altitude
 pressure_d = pressure./100;
 seaLevelhPa = mean(pressure_d(1:50));
@@ -93,5 +90,5 @@ altitude = 44330 * (1.0 - ((pressure_d./ seaLevelhPa).^0.1903));
 a_time = cast(times, 'single') ./1000;
 v = diff(altitude) ./ diff(a_time);
 
-% Kalman filter
-[x, p] = Kalman_example(e_time, altitude_l, zAccMUX, 2000, 4300);
+end
+plot(times, absAccMUX);
