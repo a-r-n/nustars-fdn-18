@@ -94,4 +94,11 @@ a_time = cast(times, 'single') ./1000;
 v = diff(altitude) ./ diff(a_time);
 
 % Kalman filter
-[x, p] = Kalman_example(e_time, altitude_l, zAccMUX, 2000, 4300);
+start_index = 1;
+end_index = 5000;
+[x, p] = Kalman_example(e_time, altitude_l, -(yAccMUX -9.81), start_index, end_index);
+
+% Fixing acceleration (incase this is necessary)
+% Assumes it flipped at apogee
+[m, i] = max(altitude);
+f_acc = [-(yAccMUX(1:i)-9.81), (yAccMUX(i:length(yAccMUX))+9.81)];
