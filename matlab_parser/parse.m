@@ -1,19 +1,26 @@
+clc
+close all
+clear
+
 port_name = "/dev/cu.usbmodem14301";
-BaudRate = 9600;
+BaudRate = 115200;
 s = serial(port_name, 'BaudRate', BaudRate);
 
+big_index = 1;
+
+% infinite loop!!!
+while 1==1
 fopen(s);
-fprintf(s, '*IDN?');
-data = fscanf(s);
+data = fread(s);
 fclose(s);
-%dfile = fopen('combo.hex');
-%data = fread(dfile, Inf);
-dataLength = length(data)/70;
+packet_size = 69; % lol
+dataLength = length(data)/packet_size;
 
 entries = [];
 
 for i = 1:dataLength
-  offset = (i - 1) * 70 + 1;
+  
+  offset = (i - 1) * packet_size + 1;
   headers{i} = [data(offset), data(offset + 1), data(offset + 2)];
   times(i) = typecast(uint8(data(offset + 4:offset+7)), 'uint32');
   xAccMUX(i) = typecast(uint8(data(offset + 8:offset + 11)), 'single');
@@ -38,7 +45,30 @@ for i = 1:dataLength
   raven(i) = data(offset + 68);
   
   
+    % big fuckin' arrays
+    
+    big_times(big_index) = times(i);
+    big_xAccMUX(big_index) = xAccMUX(i);
+    big_yAccMUX(big_index) = yAccMUX(i);
+    big_zAccMUX(big_index) = zAccMUX(i);
+    big_xRotMUX(big_index) = xRotMUX(i);
+    big_yRotMUX(big_index) = yRotMUX(i);
+    big_zRotMUX(big_index) = zRotMUX(i);
+    big_xAccDXL(big_index) = xAccDXL(i);
+    big_yAccDXL(big_index) = yAccDXL(i);
+    big_zAccDXL(big_index) = zAccDXL(i);
+    big_pressure(big_index) = pressure(i);
+    big_temperature(big_index) = temperature(i);
+    big_lat(big_index) = lat(i);
+    big_lng(big_index) = lng(i);
+    big_gpsAlt(big_index) = gpsAlt(i);
+    big_numSat(big_index) = numSat(i);
+    big_raven(big_index) = raven(i);
+    
+    big_index = big_index + 1;
+  
 end
+
 
 [times, tord] = sort(times);
 yAccMUX = yAccMUX(tord);
@@ -50,5 +80,5 @@ absAccMUX = sqrt(xAccMUX.^2 + yAccMUX.^2 + zAccMUX.^2);
 
 
 dv = diff(pressure)./cast(diff(times),'single');
-
+end
 plot(times, absAccMUX);
