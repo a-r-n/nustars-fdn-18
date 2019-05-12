@@ -101,4 +101,4 @@ end_index = 5000;
 % Fixing acceleration (incase this is necessary)
 % Assumes it flipped at apogee
 [m, i] = max(altitude);
-f_acc = [-(yAccMUX(1:i)-9.81), (yAccMUX(i-1:length(yAccMUX))+9.81)];
+f_acc = [-(yAccMUX(1:i)-9.81), (yAccMUX(i+1:length(yAccMUX))+9.81)];
