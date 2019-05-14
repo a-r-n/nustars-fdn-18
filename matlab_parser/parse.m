@@ -85,20 +85,22 @@ end
 plot(times, absAccMUX);
 
 % Calculating altitude
-pressure_d = pressure./100;
+pressure_d = big_pressure./100;
 seaLevelhPa = mean(pressure_d(1:50));
 altitude = 44330 * (1.0 - ((pressure_d./ seaLevelhPa).^0.1903));
 
 % Differentiating altitude to get velocity
-a_time = cast(times, 'single') ./1000;
+a_time = cast(big_times, 'single') ./1000;
 v = diff(altitude) ./ diff(a_time);
+
+%Fixing acceleration (incase this is necessary)
+% Assumes it flipped at apogee
+[m, i] = max(altitude);
+f_acc = [-(big_yAccMUX(1:i)-9.81), (big_yAccMUX(i+1:length(big_yAccMUX))+9.81)];
 
 % Kalman filter
 start_index = 1;
-end_index = 5000;
-[x, p] = Kalman_example(e_time, altitude_l, -(yAccMUX -9.81), start_index, end_index);
+end_index = length(a_time);
+[x, p] = Kalman_example(a_time, altitude, f_acc, start_index, end_index);
+[x, p] = Kalman_example(a_time, altitude, big_yAccMuX, start_index, end_index);
 
-% Fixing acceleration (incase this is necessary)
-% Assumes it flipped at apogee
-[m, i] = max(altitude);
-f_acc = [-(yAccMUX(1:i)-9.81), (yAccMUX(i+1:length(yAccMUX))+9.81)];
