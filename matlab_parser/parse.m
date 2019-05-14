@@ -7,9 +7,9 @@ BaudRate = 115200;
 s = serial(port_name, 'BaudRate', BaudRate);
 
 big_index = 1;
-
+temp_end = 10;
 % infinite loop!!!
-while 1==1
+for asdlkfgjaslkdj = 1:temp_end
 fopen(s);
 data = fread(s);
 fclose(s);
@@ -85,13 +85,16 @@ end
 plot(times, absAccMUX);
 
 % Calculating altitude
-pressure_d = pressure./100;
+pressure_d = big_pressure./100;
 seaLevelhPa = mean(pressure_d(1:50));
 altitude = 44330 * (1.0 - ((pressure_d./ seaLevelhPa).^0.1903));
 
 % Differentiating altitude to get velocity
-a_time = cast(times, 'single') ./1000;
+a_time = cast(big_times, 'single') ./1000;
 v = diff(altitude) ./ diff(a_time);
 
 % Kalman filter
-[x, p] = Kalman_example(e_time, altitude_l, zAccMUX, 2000, 4300);
+start_index = 1;
+end_index = 7*temp_end;
+[x, p] = Kalman_example(a_time, altitude, big_yAccMUX-9.81, start_index, end_index);
+plot(x(2,:))
