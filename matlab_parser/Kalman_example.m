@@ -12,7 +12,7 @@ function [x, p] = Kalman_example(t, h, a, s, e)
 C = [1 0];
 x0 = [0; 0];
 p0 = [10; 0 ; 0; 1]; % first number error in position squared ?
-R = 1; % error in position squared ?
+R = 2; % error in position squared ?
 Q = 10; % error in acceleration squared ?
 
 % Things to save
