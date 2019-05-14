@@ -5,14 +5,20 @@ clear
 port_name = "/dev/cu.usbmodem14301";
 BaudRate = 115200;
 s = serial(port_name, 'BaudRate', BaudRate);
+filename = "combo.hex";
 
-big_index = 1;
-temp_end = 10;
 % infinite loop!!!
-for asdlkfgjaslkdj = 1:temp_end
-fopen(s);
-data = fread(s);
-fclose(s);
+while 1==1
+w = waitforbuttonpress;
+key = double(get(gcf,'CurrentCharacter'));
+if key == double('x')
+    break;
+end
+big_index = 1;
+
+file = fopen(filename);
+data = fread(file);
+fclose(file);
 packet_size = 69; % lol
 dataLength = length(data)/packet_size;
 
@@ -81,7 +87,6 @@ absAccMUX = sqrt(xAccMUX.^2 + yAccMUX.^2 + zAccMUX.^2);
 
 dv = diff(pressure)./cast(diff(times),'single');
 
-end
 plot(times, absAccMUX);
 
 % Calculating altitude
@@ -95,6 +100,9 @@ v = diff(altitude) ./ diff(a_time);
 
 % Kalman filter
 start_index = 1;
-end_index = 7*temp_end;
+end_index = dataLength;
 [x, p] = Kalman_example(a_time, altitude, big_yAccMUX-9.81, start_index, end_index);
 plot(x(2,:))
+
+
+end
