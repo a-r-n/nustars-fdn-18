@@ -5,7 +5,7 @@ clear
 port_name = "/dev/cu.usbmodem14301";
 BaudRate = 115200;
 s = serial(port_name, 'BaudRate', BaudRate);
-filename = "combo.hex";
+filename = "test.hex";
 
 % infinite loop!!!
 while 1==1
