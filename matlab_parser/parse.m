@@ -1,7 +1,7 @@
 clear;
 dfile = fopen('data0.hex');
 data = fread(dfile, Inf);
-v = data(find(data == 10))
+v = data(find(data == 10));
 %COMMENT OUT THIS LINE WHEN ANALYZING FLASH DATA
 %data = data(v(2) + 1 : end);
 %END LINE TO COMMENT OUT
