@@ -35,7 +35,7 @@
 
 // setting debug stuff
 #define DEBUG false
-int divisor = 1; 
+int divisor = 3; 
 
 //suspecting a race condition in the compiler or something else insane because this has to be moved sometimes for it to compile :O
 union fusion_t {
