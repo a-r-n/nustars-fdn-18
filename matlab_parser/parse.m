@@ -1,4 +1,4 @@
-dfile = fopen('data2.hex');
+dfile = fopen('data3.hex');
 data = fread(dfile, Inf);
 v = data(find(data == 10))
 %COMMENT OUT THIS LINE WHEN ANALYZING FLASH DATA
@@ -98,9 +98,5 @@ title('Velocity');
 hold off
 subplot(3, 1, 3);
 plot(a_time, altitude);
-<<<<<<< HEAD
-title('Altitude');
-=======
 title('Altitude');
 movegui(f,'south');
->>>>>>> a69869b1d84f0c5117a41c24a61d82071c32fa58
