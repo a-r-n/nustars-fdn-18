@@ -1,4 +1,5 @@
-dfile = fopen('data3.hex');
+clear;
+dfile = fopen('data0.hex');
 data = fread(dfile, Inf);
 v = data(find(data == 10));
 %COMMENT OUT THIS LINE WHEN ANALYZING FLASH DATA
@@ -83,20 +84,45 @@ end_index = length(a_time);
 altitude_imp = altitude * 3.2808;
 v_imp = 3.2808 * v;
 vs_imp = 3.2808 * xs(2, :);
-vf_imp = 3.2808 * xf(2, :);
+vf_imp = 3.2808 * xf(2, 2:end);
+f_acc_imp = 3.2808 * f_acc;
+yAccMUX_imp = 3.2808 * yAccMUX;
 
-% Plotting things
+% Plotting things in metric
+% f = figure('Position', [300, 900, 700, 800]);
+% subplot(3, 1, 1);
+% plot(a_time, f_acc);
+% title('Acceleration');
+% subplot(3, 1, 2);
+% hold on
+% plot(a_time(2:end), v, a_time(2:end), xf(2, 2:end));
+% legend('Differentiated altitude', 'Kalman Filter');
+% title('Velocity');
+% hold off
+% subplot(3, 1, 3);
+% plot(a_time, altitude);
+% title('Altitude');
+% movegui(f,'south');
+
+% Plotting things in imperial 
 f = figure('Position', [300, 900, 700, 800]);
 subplot(3, 1, 1);
-plot(a_time, f_acc);
+plot(a_time, f_acc_imp);
+xlabel("time (seconds)");
+ylabel("flipped acceleration (ft/s^2)");
 title('Acceleration');
 subplot(3, 1, 2);
 hold on
-plot(a_time(2:end), v, a_time(2:end), xf(2, 2:end));
+plot(a_time(2:end), v_imp, a_time(2:end), vf_imp);
 legend('Differentiated altitude', 'Kalman Filter');
 title('Velocity');
+xlabel("time (seconds)");
+ylabel("velocity (ft/s)");
 hold off
 subplot(3, 1, 3);
-plot(a_time, altitude);
+plot(a_time, altitude_imp);
+xlabel("time (seconds)");
+ylabel("altitude (feet)");
 title('Altitude');
+
 movegui(f,'south');

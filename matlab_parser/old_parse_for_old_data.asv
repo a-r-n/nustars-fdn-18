@@ -74,9 +74,7 @@ end_index = length(a_time);
 altitude_imp = altitude * 3.2808;
 v_imp = 3.2808 * v;
 vs_imp = 3.2808 * xs(2, :);
-vf_imp = 3.2808 * xf(2, 2:end);
-f_acc_imp = 3.2808 * f_acc;
-yAccMUX_imp = 3.2808 * yAccMUX;
+vf_imp = 3.2808 * xf(2, :);
 
 % Plotting things in metric
 % f = figure('Position', [300, 900, 700, 800]);
@@ -104,22 +102,22 @@ yAccMUX_imp = 3.2808 * yAccMUX;
 % Plotting things
 f = figure('Position', [300, 900, 700, 800]);
 subplot(3, 1, 1);
-plot(a_time, f_acc_imp);
+plot(a_time, f_acc);
 xlabel("time (seconds)");
-ylabel("flipped acceleration (ft/s^2)");
+ylabel("flipped acceleration (m/s^2)");
 title('Acceleration');
 subplot(3, 1, 2);
 hold on
-plot(a_time(2:end), v_imp, a_time(2:end), vf_imp);
+plot(a_time(2:end), v, a_time(2:end), xf(2, 2:end));
 legend('Differentiated altitude', 'Kalman Filter');
 title('Velocity');
 xlabel("time (seconds)");
-ylabel("velocity (ft/s)");
+ylabel("velocity (m/s)");
 hold off
 subplot(3, 1, 3);
 plot(a_time, altitude_imp);
 xlabel("time (seconds)");
-ylabel("altitude (feet)");
+ylabel("altitude (meters)");
 title('Altitude');
 
 movegui(f,'south');
