@@ -1,5 +1,5 @@
 clear;
-dfile = fopen('data3.hex');
+dfile = fopen('data0.hex');
 data = fread(dfile, Inf);
 v = data(find(data == 10))
 %COMMENT OUT THIS LINE WHEN ANALYZING FLASH DATA

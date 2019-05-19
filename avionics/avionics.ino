@@ -320,7 +320,7 @@ void loop() {
     Serial.write(msg);
 
     if (!writeSignal) //copy nothing if the thing is still waiting to do it!
-      //memcpy(writeBuffer + wbPos, packetBuffer, PACKET_SIZE);
+      memcpy(writeBuffer + wbPos, packetBuffer, PACKET_SIZE);
       wbPos += PACKET_SIZE;
       if (WRITE_BUFFER_SIZE - wbPos <= PACKET_SIZE) writeSignal = true;
     }
