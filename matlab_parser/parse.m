@@ -1,7 +1,10 @@
 dfile = fopen('test_night.radiofile');
 data = fread(dfile, Inf);
 
-data = data(find(data == 10)(2) + 1 : end);
+%data = data(find(data == 10)(2) + 1 : end);
+
+v = find(data == 10);
+data = data(v(2)+1 : end);
 
 dataLength = length(data)/69;
 
@@ -76,7 +79,7 @@ vs_imp = 3.2808 * xs(2, :);
 vf_imp = 3.2808 * xf(2, :);
 
 % Plotting things
-figure('Position', [300, 900, 700, 800])
+f = figure('Position', [300, 900, 700, 800]);
 subplot(3, 1, 1);
 plot(a_time, f_acc);
 title('Acceleration');
@@ -89,6 +92,7 @@ hold off
 subplot(3, 1, 3);
 plot(a_time, altitude);
 title('Altitude');
+movegui(f,'south');
 
 
 
