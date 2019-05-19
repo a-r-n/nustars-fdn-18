@@ -82,7 +82,7 @@ absAccMUX = sqrt(xAccMUX.^2 + yAccMUX.^2 + zAccMUX.^2);
 dv = diff(pressure)./cast(diff(times),'single');
 
 end
-plot(times, absAccMUX);
+%plot(times, absAccMUX);
 
 % Calculating altitude
 pressure_d = big_pressure./100;
@@ -101,14 +101,26 @@ f_acc = [abs(big_yAccMUX(1:i)-9.81), (big_yAccMUX(i+1:length(big_yAccMUX))+9.81)
 % Kalman filter
 start_index = 1;
 end_index = length(a_time);
-[xs, ps] = Kalman_example(a_time, altitude, f_acc, start_index, end_index);
-[xf, pf] = Kalman_example(a_time, altitude, big_yAccMuX, start_index, end_index);
+[xf, pf] = Kalman_example(a_time, altitude, f_acc, start_index, end_index);
+[xs, ps] = Kalman_example(a_time, altitude, big_yAccMuX, start_index, end_index);
 
 % Converting to imperial
 altitude_imp = altitude * 3.2808;
 v_imp = 3.2808 * v;
 vs_imp = 3.2808 * xs(2, :);
 vf_imp = 3.2808 * xf(2, :);
+
+% Plotting things
+figure('Position', [300, 900, 700, 800])
+subplot(3, 1, 1);
+plot(a_time, f_acc);
+subplot(3, 1, 2);
+hold on
+plot(a_time(2:end), v, a_time(2:end), xf(2, 2:end));
+legend('Differentiated altitude', 'Kalman Filter');
+hold off
+subplot(3, 1, 3);
+plot(e_time, altitude_l);
 
 
 
