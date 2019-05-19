@@ -96,7 +96,7 @@ v = diff(altitude) ./ diff(a_time);
 %Fixing acceleration (incase this is necessary)
 % Assumes it flipped at apogee
 [m, i] = max(altitude);
-f_acc = [-(big_yAccMUX(1:i)-9.81), (big_yAccMUX(i+1:length(big_yAccMUX))+9.81)];
+f_acc = [abs(big_yAccMUX(1:i)-9.81), (big_yAccMUX(i+1:length(big_yAccMUX))+9.81)];
 
 % Kalman filter
 start_index = 1;
