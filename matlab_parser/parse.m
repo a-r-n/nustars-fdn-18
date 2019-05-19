@@ -126,3 +126,6 @@ ylabel("altitude (feet)");
 title('Altitude');
 
 movegui(f,'south');
+
+figure;
+plot(a_time, yAccMUX);
