@@ -1,17 +1,23 @@
-dfile = fopen('test_night.radiofile');
+dfile = fopen('data3.hex');
 data = fread(dfile, Inf);
+v = data(find(data == 10))
+%COMMENT OUT THIS LINE WHEN ANALYZING FLASH DATA
+%data = data(v(2) + 1 : end);
+%END LINE TO COMMENT OUT
 
-
-v = find(data == 10);
-data = data(v(2)+1 : end);
-
-
-dataLength = length(data)/69;
+dataLength = length(data)
+eMatch = (data == ['N' 'U' 'x']);
+xMatch = zeros(1, length(eMatch));
+for i = 1:length(eMatch)-2
+    if eMatch(i, 1) && eMatch(i+1, 2) && eMatch(i+2, 3);
+      xMatch(i) = 1;
+    end
+  end
+match = find(xMatch);
 
 entries = [];
-
-for i = 1:dataLength
-  offset = (i - 1) * 69 + 1;
+for i = 1:length(match)-1
+  offset = match(i);
   headers{i} = [data(offset), data(offset + 1), data(offset + 2)];
   times(i) = typecast(uint8(data(offset + 4:offset+7)), 'uint32');
   xAccMUX(i) = typecast(uint8(data(offset + 8:offset + 11)), 'single');
@@ -38,12 +44,13 @@ for i = 1:dataLength
 
 end
 
-
+%{
 [times, tord] = sort(times);
 yAccMUX = yAccMUX(tord);
 xAccMUX = xAccMUX(tord);
 zAccMUX = zAccMUX(tord);
 pressure = pressure(tord);
+%}
 
 absAccMUX = sqrt(xAccMUX.^2 + yAccMUX.^2 + zAccMUX.^2);
 
