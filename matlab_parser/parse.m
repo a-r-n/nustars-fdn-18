@@ -101,6 +101,14 @@ f_acc = [abs(big_yAccMUX(1:i)-9.81), (big_yAccMUX(i+1:length(big_yAccMUX))+9.81)
 % Kalman filter
 start_index = 1;
 end_index = length(a_time);
-[x, p] = Kalman_example(a_time, altitude, f_acc, start_index, end_index);
-[x, p] = Kalman_example(a_time, altitude, big_yAccMuX, start_index, end_index);
+[xs, ps] = Kalman_example(a_time, altitude, f_acc, start_index, end_index);
+[xf, pf] = Kalman_example(a_time, altitude, big_yAccMuX, start_index, end_index);
+
+% Converting to imperial
+altitude_imp = altitude * 3.2808;
+v_imp = 3.2808 * v;
+vs_imp = 3.2808 * xs(2, :);
+vf_imp = 3.2808 * xf(2, :);
+
+
 
