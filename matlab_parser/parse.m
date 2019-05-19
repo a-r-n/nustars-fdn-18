@@ -1,10 +1,10 @@
 dfile = fopen('test_night.radiofile');
 data = fread(dfile, Inf);
 
-%data = data(find(data == 10)(2) + 1 : end);
 
 v = find(data == 10);
 data = data(v(2)+1 : end);
+
 
 dataLength = length(data)/69;
 
@@ -93,6 +93,3 @@ subplot(3, 1, 3);
 plot(a_time, altitude);
 title('Altitude');
 movegui(f,'south');
-
-
-
