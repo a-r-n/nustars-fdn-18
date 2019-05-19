@@ -114,13 +114,16 @@ vf_imp = 3.2808 * xf(2, :);
 figure('Position', [300, 900, 700, 800])
 subplot(3, 1, 1);
 plot(a_time, f_acc);
+title('Acceleration');
 subplot(3, 1, 2);
 hold on
 plot(a_time(2:end), v, a_time(2:end), xf(2, 2:end));
 legend('Differentiated altitude', 'Kalman Filter');
+title('Velocity');
 hold off
 subplot(3, 1, 3);
 plot(e_time, altitude_l);
+title('Altitude');
 
 
 
