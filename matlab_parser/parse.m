@@ -1,11 +1,14 @@
-dfile = fopen('combo.hex');
+dfile = fopen('test_night.radiofile');
 data = fread(dfile, Inf);
-dataLength = length(data)/70;
+
+data = data(find(data == 10)(2) + 1 : end);
+
+dataLength = length(data)/69;
 
 entries = [];
 
 for i = 1:dataLength
-  offset = (i - 1) * 70 + 1;
+  offset = (i - 1) * 69 + 1;
   headers{i} = [data(offset), data(offset + 1), data(offset + 2)];
   times(i) = typecast(uint8(data(offset + 4:offset+7)), 'uint32');
   xAccMUX(i) = typecast(uint8(data(offset + 8:offset + 11)), 'single');
