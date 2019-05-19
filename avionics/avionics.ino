@@ -213,7 +213,7 @@ void setup() {
 
     Serial.println(base_acc);
 
-    for (int i = 120; i >= 80; i--) {
+    for (int i = 130; i >= 90; i--) {
         servo.write(i);
         delay(5);
       }
@@ -319,7 +319,7 @@ void loop() {
     if (raven ^ lastRaven) {
       //Serial.println(maxAcc);
       if (val1b | val0b) {
-        for (int i = 80; i < 120; i++) {
+        for (int i = 90; i < 130; i++) {
           servo.write(i);
           delay(5);
         }
