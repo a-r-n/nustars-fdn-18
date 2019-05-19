@@ -76,10 +76,10 @@ Adafruit_M0_Express_CircuitPython fatfs(flash);
 //END TEMPORARY
 
 // variables to store values for each pin
-int val0a = 0; 
-int val0b = 0;
-int val1a = 0; 
-int val1b = 0;
+volatile int val0a = 0; 
+volatile int val0b = 0;
+volatile int val1a = 0; 
+volatile int val1b = 0;
 
 using namespace nustars;
 
@@ -115,7 +115,9 @@ bool writeSignal = false; //for communicaiton between the main loop and the writ
 
 double base_acc;
 
-int servoPos;
+int lastRaven = 0;
+
+volatile int servoPos;
 
 void setup() {
     if(DEBUG){
@@ -133,10 +135,10 @@ void setup() {
       while (!Serial);
     }
     Wire.begin();
+    servo.attach(5);
     delay(1000);
 
-    servo.attach(5);
-    servoPos = 0;
+    servoPos = 600;
 
     //TEMPORARY WRITING
     // Initialize flash library and check its chip ID.
@@ -211,9 +213,16 @@ void setup() {
 
     Serial.println(base_acc);
 
+    for (int i = 90; i >= 0; i--) {
+        servo.write(i);
+        delay(5);
+      }
+
+    delay(1000);
+    
     Scheduler.startLoop(writeFlash);
     Scheduler.startLoop(writeRadio);
-    //Scheduler.startLoop(servoLoop);
+    //Scheduler.startLoop(servoSend);
 
     
     Serial.println("finished setup");
@@ -227,9 +236,10 @@ double moveTheAverage(double xn2, double xn1, double x0, double x1, double x2) {
 double v = 0;
 long lastdt = millis();
 
-double maxAcc=0;
+float maxAcc=0;
 
 void loop() {
+  
     //update the sensors
     gps->tick();
     alt->tick();
@@ -279,7 +289,11 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = alt->getTemp();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
-    
+
+    // MaxAcc
+    //maxAcc = (imux->getAcceleration(Y_AXIS)) > maxAcc - (maxAcc < 0) * 2 * maxAcc) ? imux->getAcceleration(Y_AXIS) : maxAcc;
+    double yAcc = (adxl->getAcceleration(Y_AXIS));
+    maxAcc = abs(yAcc) > abs(maxAcc) ? abs(yAcc) : maxAcc;
 
     //GPS
     fusion.f = gps->getLat();
@@ -288,8 +302,8 @@ void loop() {
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = gps->getAlt();
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
-    fusion.i = gps->getSat();
-    pack(fusion, packetBuffer, bufferLocation, sizeof(int));
+    fusion.f = (float)maxAcc;
+    pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     
     //Raven binary
     uint8_t raven = 0;
@@ -302,11 +316,25 @@ void loop() {
     raven |= val0b << 1;
     raven |= val1a << 2;
     raven |= val1b << 3;
-    
-    servoSend();
+    if (raven ^ lastRaven) {
+      //Serial.println(maxAcc);
+      if (val1b | val0b) {
+        for (int i = 0; i < 120; i++) {
+          servo.write(i);
+          delay(5);
+        }
+      } else if (val1a | val0a) {
+        for (int i = 90; i >= 0; i--) {
+          servo.write(i);
+          delay(5);
+        }
+      }
+    }
+    lastRaven = raven;
 
     fusion.b[0] = raven;
     pack(fusion, packetBuffer, bufferLocation, sizeof(uint8_t)); 
+
 
     //Finally, pack the checksum
     fusion.b[0] = checksum;
@@ -317,7 +345,7 @@ void loop() {
 
     char msg[50];
     sprintf(msg, "Checksum: 0x%x\n\0", tmpsum);
-    Serial.write(msg);
+    //Serial.write(msg);
 
     if (!writeSignal) //copy nothing if the thing is still waiting to do it!
       //memcpy(writeBuffer + wbPos, packetBuffer, PACKET_SIZE);
@@ -325,8 +353,9 @@ void loop() {
       if (WRITE_BUFFER_SIZE - wbPos <= PACKET_SIZE) writeSignal = true;
     }
 
-    maxAcc = (imux->getAcceleration(X_AXIS)) > maxAcc ? imux->getAcceleration(X_AXIS) : maxAcc;
-
+    //maxAcc = (imux->getAcceleration(Y_AXIS)) > maxAcc - (maxAcc < 0) * 2 * maxAcc) ? imux->getAcceleration(Y_AXIS) : maxAcc;
+    //yAcc = (imux->getAcceleration(Y_AXIS));
+    //maxAcc = abs(yAcc) > maxAcc ? abs(yAcc) : maxAcc;
     //Serial.println(maxAcc);
     //Serial.println(imux->getOrientation(X_AXIS));
     
@@ -362,7 +391,7 @@ void writeFlash() {
  * Therefore, we will let it just run aqap
  */
 void writeRadio() {
-  //Serial.println("TRANSMIT!");
+  Serial.println("TRANSMIT!");
   radioLock = true; //signal the main loop not to update the packet buffer while the radio is transmitting
   //consider making this a global (evil) so that it doesn't need to be reallocated every time (possibly expensive!)
   uint8_t localBuffer[PACKET_SIZE]; //we create a local copy of the information in case the main loop overwrites it during scheduled time (conservative policy)
@@ -373,13 +402,9 @@ void writeRadio() {
   yield();
 }
 
+volatile char sendlock = 0;
 void servoSend() {
-  if (val1b || val0b) {
-    servoPos = 1500;
-  } else if (val1a || val0a) {
-    servoPos = 750;
-  }
-  servo.writeMicroseconds(servoPos);
+  
 }
 
 /**

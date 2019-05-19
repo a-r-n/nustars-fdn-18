@@ -109,6 +109,7 @@ void loop() {
         buf[i] = x;
       }
       if (checksum == popq()) {
+        Serial.write("NUx ", 4);
         Serial.write(buf, PACKET_SIZE-5);
       }
     }
