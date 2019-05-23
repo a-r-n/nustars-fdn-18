@@ -10,7 +10,7 @@ namespace nustars {
      * Initialize the BNO
      */
     IMU::IMU() {
-        bno = Adafruit_BNO055(55); //I2C address, probably.
+        bno = Adafruit_BNO055(); //I2C address, probably.
         orientation = new float[3];
         gyro = new float[3];
         acc = new float[3];
@@ -20,6 +20,7 @@ namespace nustars {
             while (1);
         }
         bno.setExtCrystalUse(true);
+        //Select page ID 1 to write to the right register
     }
 
     /**
@@ -93,7 +94,7 @@ namespace nustars {
             case Z_AXIS:
                 rawData = analogRead(zPin);
         }
-        return (float)(rawData);
+        return (float)(rawData) * 400.0 / 1023.0 - 200; //this may not be completely accurate, but we are doing this to get mvp by the weekend
     }
 
 
