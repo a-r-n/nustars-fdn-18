@@ -78,7 +78,7 @@ void setup() {
     Serial.println("setFrequency failed");
     while (1);
   }
-  Serial.println("Setup complete");
+  //Serial.println("Setup complete");
   rf95.setTxPower(23, false);
   //END SETTING UP THE RADIO
   

@@ -153,43 +153,4 @@ namespace nustars {
     float Altimeter::getPressure() {
         return pressure;
     }
-
-    /**
-     * Say hello to the GPS
-     */
-    GPS::GPS() {
-        ada_gps = new Adafruit_GPS(&Serial1);
-        lat = 0;
-        lng = 0;
-        alt = 0;
-    }
-
-    /**
-     * Uses TinyGPS to read from GPS serial and encode information into usable variables
-     */
-    void GPS::tick() {
-        while (Serial1.available()) //if die use >0
-            tgps.encode(Serial1.read());
-        lat = tgps.location.lat();
-        lng = tgps.location.lng();
-        alt = tgps.altitude.meters();
-        numSat = tgps.satellites.value();
-    }
-
-    //ALL OF THE GETTERS
-    float GPS::getAlt() {
-        return alt;
-    }
-
-    float GPS::getLat() {
-        return lat;
-    }
-
-    float GPS::getLng() {
-        return lng;
-    }
-
-    int GPS::getSat() {
-        return numSat;
-    }
 } //END NAMESPACE

@@ -6,6 +6,7 @@
 #include <SPI.h>
 #include <Scheduler.h>
 #include <Servo.h>
+#include <Adafruit_GPS.h>
 #include <Wire.h>
 
 // FLASH DEFS TEMPORARY NO TIME
@@ -29,6 +30,13 @@
 #define R0B 11
 #define R1A 12
 #define R1B 13
+
+// what's the name of the hardware serial port?
+#define GPSSerial Serial1
+
+// Connect to the GPS on the hardware port
+Adafruit_GPS GPS(&GPSSerial);
+#define GPSECHO false
 
 #define PACKET_SIZE                                                            \
   70 // this is for optimization and ease of programming reasons... must be
@@ -84,7 +92,6 @@ volatile int val1b = 0;
 
 using namespace nustars;
 
-GPS *gps;
 Altimeter *alt;
 IMU *imux;
 ADXL *adxl;
@@ -126,6 +133,8 @@ double base_acc;
 int lastRaven = 0;
 
 volatile int servoPos;
+
+volatile bool deployed = false;
 
 void setup() {
   if (DEBUG) {
@@ -191,7 +200,25 @@ void setup() {
 
   // END TEMPORARY
 
-  gps = new GPS();
+  // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
+  GPS.begin(9600);
+  // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+  // uncomment this line to turn on only the "minimum recommended" data
+  //GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+  // For parsing data, we don't suggest using anything but either RMC only or RMC+GGA since
+  // the parser doesn't care about other sentences at this time
+  // Set the update rate
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
+  // For the parsing code to work nicely and have time to sort thru the data, and
+  // print it out we don't suggest using anything higher than 1 Hz
+     
+  // Request updates on antenna status, comment out to keep quiet
+  GPS.sendCommand(PGCMD_ANTENNA);
+  delay(500);
+  
+  // Ask for firmware version
+  GPSSerial.println(PMTK_Q_RELEASE);
   Serial.println("Q: When");
   alt = new Altimeter();
   Serial.println("do");
@@ -230,7 +257,7 @@ void setup() {
 
   Serial.println(base_acc);
 
-  for (int i = 50; i >= 25; i--) {
+  for (int i = 30; i >= 25; i--) {
     servo.write(i);
     delay(20);
   }
@@ -255,8 +282,11 @@ long lastdt = millis();
 float maxAcc = 0;
 
 void loop() {
+  char c = GPS.read();
   // update the sensors
-  gps->tick();
+  if (GPS.newNMEAreceived()) {
+    GPS.parse(GPS.lastNMEA());
+  }
   alt->tick();
   imux->tick();
   adxl->tick();
@@ -310,11 +340,13 @@ void loop() {
     maxAcc = abs(yAcc) > abs(maxAcc) ? abs(yAcc) : maxAcc;
 
     // GPS
-    fusion.f = gps->getLat();
+    fusion.f = GPS.latitude;
+    Serial.println(GPS.latitude);
+    Serial.println(GPS.longitude);
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
-    fusion.f = gps->getLng();
+    fusion.f = GPS.longitude;
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
-    fusion.f = gps->getAlt();
+    fusion.f = GPS.altitude;
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
     fusion.f = (float)maxAcc;
     pack(fusion, packetBuffer, bufferLocation, sizeof(float));
@@ -330,19 +362,21 @@ void loop() {
     raven |= val0b << 1;
     raven |= val1a << 2;
     raven |= val1b << 3;
-    Serial.println(raven);
-    if (raven != lastRaven) {
-      Serial.println(raven);
+    //Serial.println(raven);
+    if (raven != lastRaven && !deployed) {
+      //Serial.println(raven);
       if (val1b | val0b) {
         for (int i = 25; i < 75; i++) {
           servo.write(i);
           delay(20);
         }
+        deployed = true;
       } else if (val1a | val0a) {
         for (int i = 25; i >= 75; i--) {
           servo.write(i);
           delay(20);
         }
+        deployed = true;
       }
     } else {
       //Serial.println("LOL");
@@ -374,7 +408,7 @@ void loop() {
   // (imux->getAcceleration(Y_AXIS)); maxAcc = abs(yAcc) > maxAcc ? abs(yAcc) :
   // maxAcc; Serial.println(maxAcc);
   // Serial.println(imux->getOrientation(X_AXIS));
-
+  delay(5);
   yield(); // if you delete this the telemetry gods will kill you and your
   // family :(
 }
@@ -413,7 +447,7 @@ void writeFlash() {
 */
 void writeRadio() {
   if (!radioLock) {
-    Serial.println("TRANSMIT!");
+    //Serial.println("TRANSMIT!");
     radioLock = true; // signal the main loop not to update the packet buffer
     // while the radio is transmitting
     // consider making this a global (evil) so that it doesn't need to be

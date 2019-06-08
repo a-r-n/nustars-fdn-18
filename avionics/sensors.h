@@ -68,19 +68,4 @@ namespace nustars {
         float getPressure();
         float getAltitude();
     };
-
-    class GPS: public Sensor {
-    public:
-        Adafruit_GPS* ada_gps;
-        TinyGPSPlus tgps;
-        GPS();
-        void tick();
-        float getAlt();
-        float getLat();
-        float getLng();
-        int getSat();
-    private:
-        float alt, lat, lng;
-        int numSat;
-    };
 }
