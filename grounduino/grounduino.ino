@@ -89,6 +89,7 @@ void loop() {
   while (!rf95.available());
   uint8_t len = 255;
   rf95.recv(recvBuf, &len);
+  //Serial.write(recvBuf, PACKET_SIZE-5);
   pushq(recvBuf, len);
 
   uint8_t done = 0;
@@ -111,6 +112,8 @@ void loop() {
       if (checksum == popq()) {
         Serial.write("NUx ", 4);
         Serial.write(buf, PACKET_SIZE-5);
+      } else {
+        //Serial.write(buf, PACKET_SIZE-5);
       }
     }
     
